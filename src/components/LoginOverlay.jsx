@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function LoginOverlay({ auth, onLogin, onGuest }) {
   const [view, setView] = useState('login'); // 'login' | 'register'
@@ -7,6 +7,21 @@ export default function LoginOverlay({ auth, onLogin, onGuest }) {
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Lock body scroll while overlay is mounted
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
+  // Dismiss on Escape key
+  useEffect(() => {
+    function handleKey(e) {
+      if (e.key === 'Escape') onGuest();
+    }
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onGuest]);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -38,20 +53,20 @@ export default function LoginOverlay({ auth, onLogin, onGuest }) {
   }
 
   return (
-    <div className="login-overlay">
-      <div className="login-card">
-        <div className="login-logo">SAT<span>·</span>Prep</div>
+    <div className="login-overlay" onClick={onGuest}>
+      <div className="login-card" onClick={e => e.stopPropagation()}>
+        <div className="login-logo" aria-label="SAT Prep">SAT<span aria-hidden="true">·</span>Prep</div>
         <div className="login-sub">Sign in to compete on the leaderboard</div>
 
         {view === 'login' ? (
           <form onSubmit={handleLogin}>
-            <label className="login-label">Username</label>
-            <input className="login-input" value={username} onChange={e => { setUsername(e.target.value); setError(''); }}
+            <label className="login-label" htmlFor="login-username">Username</label>
+            <input id="login-username" className="login-input" type="text" value={username} onChange={e => { setUsername(e.target.value); setError(''); }}
               placeholder="e.g. alex_sat" maxLength={20} autoComplete="username" />
-            <label className="login-label">Password</label>
-            <input className="login-input" type="password" value={password} onChange={e => { setPassword(e.target.value); setError(''); }}
+            <label className="login-label" htmlFor="login-password">Password</label>
+            <input id="login-password" className="login-input" type="password" value={password} onChange={e => { setPassword(e.target.value); setError(''); }}
               placeholder="••••••••" autoComplete="current-password" />
-            <div className="login-error">{error}</div>
+            <div className="login-error" role="alert" aria-live="polite">{error}</div>
             <button className="login-btn" type="submit" disabled={loading}>
               {loading ? 'Signing in…' : 'Sign In'}
             </button>
@@ -61,16 +76,16 @@ export default function LoginOverlay({ auth, onLogin, onGuest }) {
           </form>
         ) : (
           <form onSubmit={handleRegister}>
-            <label className="login-label">Choose a Username</label>
-            <input className="login-input" value={username} onChange={e => { setUsername(e.target.value); setError(''); }}
+            <label className="login-label" htmlFor="reg-username">Choose a Username</label>
+            <input id="reg-username" className="login-input" type="text" value={username} onChange={e => { setUsername(e.target.value); setError(''); }}
               placeholder="e.g. alex_sat" maxLength={20} autoComplete="username" />
-            <label className="login-label">Password</label>
-            <input className="login-input" type="password" value={password} onChange={e => { setPassword(e.target.value); setError(''); }}
+            <label className="login-label" htmlFor="reg-password">Password</label>
+            <input id="reg-password" className="login-input" type="password" value={password} onChange={e => { setPassword(e.target.value); setError(''); }}
               placeholder="Min. 6 characters" autoComplete="new-password" />
-            <label className="login-label">Confirm Password</label>
-            <input className="login-input" type="password" value={confirm} onChange={e => { setConfirm(e.target.value); setError(''); }}
+            <label className="login-label" htmlFor="reg-confirm">Confirm Password</label>
+            <input id="reg-confirm" className="login-input" type="password" value={confirm} onChange={e => { setConfirm(e.target.value); setError(''); }}
               placeholder="Repeat password" autoComplete="new-password" />
-            <div className="login-error">{error}</div>
+            <div className="login-error" role="alert" aria-live="polite">{error}</div>
             <button className="login-btn" type="submit" disabled={loading}>
               {loading ? 'Creating…' : 'Create Account'}
             </button>

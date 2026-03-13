@@ -2,17 +2,18 @@ import { Router } from 'express';
 
 const router = Router();
 
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const VALID_MODES = ['math', 'english', 'both'];
 
 async function claudeCall(prompt, maxTokens = 1000) {
-  if (!ANTHROPIC_API_KEY) {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
     throw new Error('ANTHROPIC_API_KEY not configured');
   }
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': ANTHROPIC_API_KEY,
+      'x-api-key': apiKey,
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
@@ -21,6 +22,9 @@ async function claudeCall(prompt, maxTokens = 1000) {
       messages: [{ role: 'user', content: prompt }],
     }),
   });
+  if (!res.ok) {
+    throw new Error(`Anthropic API returned ${res.status}`);
+  }
   const data = await res.json();
   if (data.error) throw new Error('API error: ' + (data.error.message || JSON.stringify(data.error)));
   if (!data.content?.length) throw new Error('Empty response from API');
@@ -36,7 +40,9 @@ function extractJSON(str) {
 
 // POST /api/questions/generate
 router.post('/generate', async (req, res) => {
-  const { mode = 'both', difficulty = 1 } = req.body;
+  // Validate inputs
+  const mode = VALID_MODES.includes(req.body.mode) ? req.body.mode : 'both';
+  const difficulty = Math.min(10, Math.max(1, Math.round(Number(req.body.difficulty) || 1)));
 
   const modeInstruction = mode === 'math'
     ? 'Generate a SAT Math question.'
@@ -97,8 +103,8 @@ Start your response with { and end with }`;
 
     res.json(verified);
   } catch (err) {
-    console.error('Question generation error:', err.message);
-    res.status(500).json({ error: 'Failed to generate question: ' + err.message });
+    console.error('[questions] Generation error:', err.message);
+    res.status(500).json({ error: 'Failed to generate question. Please try again.' });
   }
 });
 

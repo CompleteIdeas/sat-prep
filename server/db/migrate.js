@@ -22,11 +22,12 @@ async function migrate() {
 
     // Seed admin account
     const bcrypt = await import('bcryptjs');
-    const adminHash = await bcrypt.default.hashSync('PSATclaudeiscool12345', 10);
+    const adminPassword = process.env.ADMIN_SEED_PASSWORD || 'PSATclaudeiscool12345';
+    const adminHash = bcrypt.default.hashSync(adminPassword, 10);
     await pool.query(
       `INSERT INTO users (username, password_hash, is_admin)
        VALUES ('SATPREPADMIN', $1, true)
-       ON CONFLICT (username) DO UPDATE SET password_hash = $1, is_admin = true`,
+       ON CONFLICT (username) DO NOTHING`,
       [adminHash]
     );
     console.log('[migrate] Admin account seeded');

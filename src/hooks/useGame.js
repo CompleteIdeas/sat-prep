@@ -31,7 +31,18 @@ export function useGame(user) {
   const queueRef = useRef([]);
   const fillingRef = useRef(false);
   const recentBankIdsRef = useRef([]);
+  const mountedRef = useRef(true);
+  const retryTimerRef = useRef(null);
   const [queueCount, setQueueCount] = useState(0);
+
+  // Track mount/unmount for cleanup
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (retryTimerRef.current) clearTimeout(retryTimerRef.current);
+    };
+  }, []);
 
   // Reset game state when user changes
   useEffect(() => {
@@ -78,59 +89,21 @@ export function useGame(user) {
   const fillQueue = useCallback(async (mode, difficulty) => {
     if (fillingRef.current) return;
     fillingRef.current = true;
-    while (queueRef.current.length < QUEUE_TARGET) {
+    while (queueRef.current.length < QUEUE_TARGET && mountedRef.current) {
       try {
         const q = await fetchOneQuestion(mode, difficulty);
+        if (!mountedRef.current) break;
         queueRef.current.push(q);
         setQueueCount(queueRef.current.length);
-      } catch (e) {
-        console.warn('Queue fill error:', e.message);
-        await new Promise(r => setTimeout(r, 3000));
+      } catch {
+        if (!mountedRef.current) break;
+        await new Promise(r => {
+          retryTimerRef.current = setTimeout(r, 3000);
+        });
       }
     }
     fillingRef.current = false;
   }, [fetchOneQuestion]);
-
-  const generateQuestion = useCallback(async () => {
-    setState(prev => {
-      const newNum = prev.questionNum + 1;
-      const newState = { ...prev, answered: false, questionNum: newNum, loading: true, currentQ: null };
-
-      // Fast path: queue has a question
-      if (queueRef.current.length > 0) {
-        const q = queueRef.current.shift();
-        setQueueCount(queueRef.current.length);
-        fillQueue(prev.mode, prev.difficulty);
-        return { ...newState, currentQ: q, loading: false };
-      }
-      return newState;
-    });
-
-    // If queue was empty, fetch live
-    setState(prev => {
-      if (prev.currentQ) return prev; // already set from queue
-      return prev;
-    });
-
-    // Check if we need to fetch
-    if (queueRef.current.length === 0) {
-      try {
-        const q = await fetchOneQuestion(
-          // Read current state values
-          state.mode,
-          state.difficulty
-        );
-        setState(prev => ({ ...prev, currentQ: q, loading: false }));
-      } catch (e) {
-        console.error('Question generation error:', e);
-        // Retry after delay
-        setTimeout(() => generateQuestion(), 3000);
-        return;
-      }
-    }
-
-    fillQueue(state.mode, state.difficulty);
-  }, [state.mode, state.difficulty, fetchOneQuestion, fillQueue]);
 
   const loadNextQuestion = useCallback(async (mode, difficulty) => {
     setState(prev => ({ ...prev, answered: false, questionNum: prev.questionNum + 1, loading: true, currentQ: null }));
@@ -138,17 +111,24 @@ export function useGame(user) {
     if (queueRef.current.length > 0) {
       const q = queueRef.current.shift();
       setQueueCount(queueRef.current.length);
-      setState(prev => ({ ...prev, currentQ: q, loading: false }));
+      if (mountedRef.current) {
+        setState(prev => ({ ...prev, currentQ: q, loading: false }));
+      }
       fillQueue(mode, difficulty);
       return;
     }
 
     try {
       const q = await fetchOneQuestion(mode, difficulty);
-      setState(prev => ({ ...prev, currentQ: q, loading: false }));
-    } catch (e) {
-      console.error('Question generation error:', e);
-      setTimeout(() => loadNextQuestion(mode, difficulty), 3000);
+      if (mountedRef.current) {
+        setState(prev => ({ ...prev, currentQ: q, loading: false }));
+      }
+    } catch {
+      if (mountedRef.current) {
+        retryTimerRef.current = setTimeout(() => {
+          if (mountedRef.current) loadNextQuestion(mode, difficulty);
+        }, 3000);
+      }
       return;
     }
     fillQueue(mode, difficulty);

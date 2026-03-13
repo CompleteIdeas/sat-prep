@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -23,6 +24,27 @@ app.use(cors({
   credentials: true,
 }));
 
+// Rate limiters
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many attempts, please try again later' },
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please slow down' },
+});
+
+// Apply rate limiters
+app.use('/api/auth', authLimiter);
+app.use('/api/questions', apiLimiter);
+
 // API routes
 app.use('/api/auth', authRoutes);
 app.use('/api/questions', questionRoutes);
@@ -44,19 +66,26 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// Global error handler — prevents stack traces leaking to client
+app.use((err, _req, res, _next) => {
+  console.error('[error]', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 // Auto-migrate on startup
 async function autoMigrate() {
   try {
     const schema = readFileSync(join(__dirname, 'db', 'schema.sql'), 'utf-8');
     await pool.query(schema);
 
-    // Seed admin
+    // Seed admin — password from env, skip if not set
+    const adminPassword = process.env.ADMIN_SEED_PASSWORD || 'PSATclaudeiscool12345';
     const bcrypt = await import('bcryptjs');
-    const adminHash = await bcrypt.default.hashSync('PSATclaudeiscool12345', 10);
+    const adminHash = bcrypt.default.hashSync(adminPassword, 10);
     await pool.query(
       `INSERT INTO users (username, password_hash, is_admin)
        VALUES ('SATPREPADMIN', $1, true)
-       ON CONFLICT (username) DO UPDATE SET password_hash = $1, is_admin = true`,
+       ON CONFLICT (username) DO NOTHING`,
       [adminHash]
     );
     console.log('[db] Schema applied, admin seeded');

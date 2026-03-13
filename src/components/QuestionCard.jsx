@@ -1,19 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function QuestionCard({ state, onAnswer }) {
   const { currentQ: q, loading, answered, questionNum } = state;
   const [selected, setSelected] = useState(null);
 
   // Reset selected when question changes
-  if (selected && q && !answered) {
+  useEffect(() => {
     setSelected(null);
-  }
+  }, [questionNum]);
 
   if (loading || !q) {
     return (
       <div className="question-card">
         <div className="loading-state">
-          <div className="spinner" />
+          <div className="spinner" aria-hidden="true" />
           <div>Generating your question…</div>
         </div>
       </div>
@@ -41,7 +41,8 @@ export default function QuestionCard({ state, onAnswer }) {
     <div className={`question-card ${answered ? (isRight ? 'correct' : 'wrong') : ''}`}>
       <div className="q-meta">
         <span className={`q-type ${q.type}`}>
-          {q.type === 'math' ? '🔢 Math' : '📖 English'}
+          <span aria-hidden="true">{q.type === 'math' ? '🔢' : '📖'}</span>
+          {q.type === 'math' ? ' Math' : ' English'}
         </span>
         <span className="q-num">#{questionNum}</span>
       </div>
@@ -67,10 +68,10 @@ export default function QuestionCard({ state, onAnswer }) {
       </div>
 
       {answered && (
-        <div className={`feedback-box show ${isRight ? 'correct-fb' : 'wrong-fb'}`}>
+        <div className={`feedback-box show ${isRight ? 'correct-fb' : 'wrong-fb'}`} role="alert">
           {isRight
-            ? `✓ Correct! ${q.explanation}`
-            : `✗ The answer is ${q.correct}. ${q.explanation}`}
+            ? `Correct! ${q.explanation}`
+            : `The answer is ${q.correct}. ${q.explanation}`}
         </div>
       )}
     </div>
