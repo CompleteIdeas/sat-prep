@@ -21,8 +21,8 @@ async function migrate() {
     console.log('[migrate] Schema applied successfully');
 
     // Seed admin account
-    const bcrypt = await import('bcrypt');
-    const adminHash = await bcrypt.default.hash('PSATclaudeiscool12345', 10);
+    const bcrypt = await import('bcryptjs');
+    const adminHash = await bcrypt.default.hashSync('PSATclaudeiscool12345', 10);
     await pool.query(
       `INSERT INTO users (username, password_hash, is_admin)
        VALUES ('SATPREPADMIN', $1, true)
