@@ -1,0 +1,2159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT Prep · Practice Mode</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07070e;
+    --surface: #0f0f1a;
+    --surface2: #181828;
+    --border: #252538;
+    --accent: #f5d132;
+    --accent2: #9b6dff;
+    --green: #3dffa0;
+    --red: #ff5e7d;
+    --text: #eeeeff;
+    --muted: #6060a0;
+    --orange: #ff8c42;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(123,94,167,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(123,94,167,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 28px 28px 80px;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    text-shadow: 0 0 40px rgba(245,209,50,0.25);
+  }
+  .logo span { color: var(--accent); }
+
+  .header-stats {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .stat-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .stat-pill .val {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* Streak banner */
+  .streak-bar {
+    background: linear-gradient(135deg, var(--surface2), #1a1a2e);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
+  }
+  .streak-bar.on-fire { border-color: var(--accent); box-shadow: 0 0 30px rgba(232,197,71,0.12); }
+
+  .streak-info { display: flex; align-items: center; gap: 16px; }
+  .streak-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(245,209,50,0.4);
+  }
+  .streak-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .streak-desc { font-size: 0.9rem; color: var(--text); }
+
+  .best-streak {
+    text-align: right;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .best-streak .best-val { color: var(--accent2); font-size: 1.1rem; display: block; margin-bottom: 2px; }
+
+  /* Difficulty bar */
+  .difficulty-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .diff-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); white-space: nowrap; }
+  .diff-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .diff-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--green), var(--accent), var(--red));
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  }
+  .diff-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Question card */
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 24px;
+    min-height: 240px;
+    position: relative;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .question-card.correct { border-color: var(--green); box-shadow: 0 0 30px rgba(74,222,128,0.08); }
+  .question-card.wrong { border-color: var(--red); box-shadow: 0 0 30px rgba(248,113,113,0.08); }
+
+  .q-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .q-type {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+  .q-type.math { background: rgba(123,94,167,0.2); color: #b89de0; border: 1px solid rgba(123,94,167,0.3); }
+  .q-type.english { background: rgba(232,197,71,0.15); color: var(--accent); border: 1px solid rgba(232,197,71,0.25); }
+  .q-num { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); margin-left: auto; }
+
+  .question-text {
+    font-size: 1.25rem;
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 12px;
+    font-weight: 400;
+  }
+  .question-passage {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--muted);
+    background: var(--surface2);
+    border-left: 3px solid var(--border);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    font-style: italic;
+  }
+
+  /* Loading state */
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 40px;
+    color: var(--muted);
+  }
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Answer choices */
+  .choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .choice-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.05rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.18s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .choice-btn:hover:not(:disabled) {
+    border-color: var(--accent2);
+    background: rgba(123,94,167,0.12);
+    transform: translateY(-1px);
+  }
+  .choice-btn:disabled { cursor: default; }
+  .choice-btn.selected-correct {
+    background: rgba(74,222,128,0.1);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .choice-btn.selected-wrong {
+    background: rgba(248,113,113,0.1);
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .choice-btn.reveal-correct {
+    background: rgba(74,222,128,0.06);
+    border-color: rgba(74,222,128,0.4);
+    color: var(--green);
+  }
+  .choice-letter {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    min-width: 16px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .choice-btn.selected-correct .choice-letter,
+  .choice-btn.reveal-correct .choice-letter { color: var(--green); }
+  .choice-btn.selected-wrong .choice-letter { color: var(--red); }
+
+  /* Feedback */
+  .feedback-box {
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.correct-fb { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); color: var(--green); }
+  .feedback-box.wrong-fb { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.2); color: #fca5a5; }
+
+  /* Next button */
+  .next-btn {
+    display: none;
+    width: 100%;
+    margin-top: 20px;
+    background: linear-gradient(135deg, var(--accent), #ffb700);
+    color: #07070e;
+    border: none;
+    border-radius: 16px;
+    padding: 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.2s;
+    box-shadow: 0 4px 24px rgba(245,209,50,0.25);
+  }
+  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,209,50,0.35); }
+  .next-btn.show { display: block; }
+
+  /* Leaderboard */
+  .leaderboard-section {
+    margin-top: 32px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .leaderboard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .lb-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+  .lb-rank {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    width: 20px;
+    text-align: center;
+  }
+  .lb-rank.gold { color: var(--accent); }
+  .lb-rank.silver { color: #c0c0d0; }
+  .lb-rank.bronze { color: #cd7f32; }
+  .lb-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent2);
+    min-width: 40px;
+  }
+  .lb-meta { flex: 1; }
+  .lb-date { font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .lb-tag { font-size: 0.8rem; color: var(--text); }
+  .lb-empty { color: var(--muted); font-size: 0.9rem; padding: 20px; text-align: center; }
+
+  /* Combo animation */
+  .combo-flash {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--accent);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 100;
+    text-shadow: 0 0 60px rgba(232,197,71,0.5);
+    transition: none;
+  }
+  .combo-flash.pop {
+    animation: comboPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  @keyframes comboPop {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+    40% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    70% { opacity: 1; transform: translate(-50%, -50%) scale(0.95); }
+    100% { opacity: 0; transform: translate(-50%, -60%) scale(0.9); }
+  }
+
+  /* Mode selector */
+  .mode-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-weight: 500;
+  }
+  .mode-btn.active {
+    background: var(--surface2);
+    border-color: var(--accent2);
+    color: var(--text);
+  }
+  .mode-btn:hover:not(.active) { border-color: var(--muted); color: var(--text); }
+
+  /* Input for free-response (if needed) */
+  .input-answer {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    outline: none;
+    margin-top: 16px;
+    transition: border-color 0.2s;
+  }
+  .input-answer:focus { border-color: var(--accent2); }
+  .submit-btn {
+    margin-top: 10px;
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--accent2);
+    border-radius: 12px;
+    padding: 13px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .submit-btn:hover { background: rgba(123,94,167,0.2); }
+
+
+
+
+
+  /* ── Admin panel ─────────────────────────────────────────── */
+  .admin-account-row {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .admin-account-row .aa-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; color: #07070e; flex-shrink: 0;
+  }
+  .admin-account-row .aa-info { flex: 1; min-width: 0; }
+  .admin-account-row .aa-name { font-weight: 600; font-size: 0.95rem; }
+  .admin-account-row .aa-stats { font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .admin-btn {
+    padding: 7px 14px; border-radius: 8px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none;
+    transition: opacity 0.15s;
+  }
+  .admin-btn:hover { opacity: 0.8; }
+  .admin-btn.reset-stats { background: rgba(245,209,50,0.15); color: var(--accent); border: 1px solid rgba(245,209,50,0.3); }
+  .admin-btn.delete-acct { background: rgba(255,94,125,0.15); color: var(--red); border: 1px solid rgba(255,94,125,0.3); }
+
+
+  /* ── Floor difficulty control ───────────────────────────── */
+  .floor-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 12px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    flex-wrap: wrap;
+  }
+  .floor-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .floor-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px 6px;
+  }
+  .floor-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    width: 28px; height: 28px;
+    color: var(--text);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    line-height: 1;
+  }
+  .floor-btn:hover:not(:disabled) { background: var(--accent); color: #07070e; border-color: var(--accent); }
+  .floor-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .floor-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 36px;
+    text-align: center;
+    color: var(--text);
+  }
+  .floor-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid currentColor;
+  }
+  .floor-hint {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-left: auto;
+    font-style: italic;
+  }
+  @media (max-width: 600px) { .floor-hint { display: none; } }
+
+  /* ── Stats panel tab navigation ─────────────────────────── */
+  .tab-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 6px;
+  }
+  .tab-btn {
+    flex: 1; padding: 12px 20px;
+    background: transparent; border: none;
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 600;
+    border-radius: 12px; cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+  }
+  .tab-btn.active {
+    background: var(--surface2);
+    color: var(--text);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Stats cards grid ────────────────────────────────────── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .stat-card-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem; font-weight: 900;
+    line-height: 1; margin-bottom: 6px;
+  }
+  .stat-card-label {
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--muted);
+  }
+
+  /* ── History list ─────────────────────────────────────────── */
+  .history-list {
+    display: flex; flex-direction: column; gap: 8px;
+    max-height: 520px; overflow-y: auto;
+    padding-right: 4px;
+  }
+  .history-list::-webkit-scrollbar { width: 4px; }
+  .history-list::-webkit-scrollbar-track { background: var(--border); border-radius: 2px; }
+  .history-list::-webkit-scrollbar-thumb { background: var(--accent2); border-radius: 2px; }
+
+  .history-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex; align-items: flex-start; gap: 14px;
+    animation: slideIn 0.25s ease;
+  }
+  .history-item.correct { border-left: 3px solid var(--green); }
+  .history-item.wrong   { border-left: 3px solid var(--red); }
+  .hi-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+  .hi-body { flex: 1; min-width: 0; }
+  .hi-question { font-size: 0.9rem; color: var(--text); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hi-meta { font-size: 0.75rem; color: var(--muted); font-family: 'DM Mono', monospace; display: flex; gap: 12px; flex-wrap: wrap; }
+  .hi-pts { color: var(--accent); font-weight: 600; }
+
+  /* ── Session stats bar ───────────────────────────────────── */
+  .session-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .sbar-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+  .sbar-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; font-weight: 900; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .sbar-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+
+  /* More energetic correct/wrong card glow */
+  .question-card.correct { border-color: var(--green); box-shadow: 0 0 50px rgba(61,255,160,0.12), inset 0 0 30px rgba(61,255,160,0.03); }
+  .question-card.wrong   { border-color: var(--red);   box-shadow: 0 0 50px rgba(255,94,125,0.12),  inset 0 0 30px rgba(255,94,125,0.03); }
+
+  /* Pulsing streak on fire */
+  .streak-bar.on-fire {
+    border-color: var(--accent);
+    box-shadow: 0 0 40px rgba(245,209,50,0.18);
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+  @keyframes pulseGlow {
+    0%,100% { box-shadow: 0 0 40px rgba(245,209,50,0.18); }
+    50%      { box-shadow: 0 0 60px rgba(245,209,50,0.30); }
+  }
+
+  @media (max-width: 700px) {
+    .session-bar { grid-template-columns: repeat(2,1fr); }
+    .stats-grid  { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ── Victory flash overlay ───────────────────────────────── */
+  .victory-flash {
+    position: fixed; inset: 0; z-index: 90;
+    pointer-events: none; opacity: 0;
+  }
+  .victory-flash.pop {
+    animation: victoryPop 0.55s ease-out forwards;
+  }
+  @keyframes victoryPop {
+    0%   { opacity: 0; }
+    15%  { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* ── Points popup ────────────────────────────────────────── */
+  .points-popup {
+    position: fixed;
+    top: 40%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 3.5rem;
+    pointer-events: none; opacity: 0; z-index: 101;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.6);
+    white-space: nowrap;
+  }
+  .points-popup.pop {
+    animation: pointsPop 1s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+  }
+  @keyframes pointsPop {
+    0%   { opacity:0; transform:translate(-50%,-50%) scale(0.4); }
+    35%  { opacity:1; transform:translate(-50%,-50%) scale(1.15); }
+    65%  { opacity:1; transform:translate(-50%,-55%) scale(1); }
+    100% { opacity:0; transform:translate(-50%,-75%) scale(0.85); }
+  }
+
+  /* ── Multiplier badge ────────────────────────────────────── */
+  .multiplier-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 100px; padding: 3px 12px;
+    font-family: 'DM Mono', monospace; font-size: 0.8rem;
+    transition: all 0.3s;
+  }
+  .multiplier-badge.hot { border-color: var(--accent); color: var(--accent); }
+  .multiplier-badge.fire { border-color: #f97316; color: #f97316; }
+  .multiplier-badge.ultra { border-color: #a855f7; color: #a855f7; }
+
+  /* ── Points display in streak banner ────────────────────── */
+  .points-display {
+    text-align: center;
+  }
+  .points-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 900;
+    color: var(--accent); line-height: 1;
+    transition: all 0.2s;
+    text-shadow: 0 0 20px rgba(245,209,50,0.3);
+  }
+  .points-label { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+  /* ── Difficulty bar tiers ────────────────────────────────── */
+  /* bar color set dynamically via JS, but we define the tier glow */
+  .diff-track {
+    flex: 1; height: 12px;
+    background: var(--border); border-radius: 6px; overflow: hidden;
+    position: relative;
+  }
+  .diff-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1), background 0.6s ease;
+  }
+  .diff-track .diff-fill-ghost {
+    position: absolute; inset: 0; border-radius: 4px;
+    opacity: 0;
+  }
+  .diff-track .diff-fill-ghost.flash {
+    animation: diffFlash 0.5s ease-out forwards;
+  }
+  @keyframes diffFlash {
+    0%   { opacity: 0.7; }
+    100% { opacity: 0; }
+  }
+
+  /* ── Diff badge tiers ────────────────────────────────────── */
+  .diff-badge.tier-green  { border-color: #4ade80; color: #4ade80; }
+  .diff-badge.tier-yellow { border-color: #facc15; color: #facc15; }
+  .diff-badge.tier-orange { border-color: #f97316; color: #f97316; }
+  .diff-badge.tier-red    { border-color: #ef4444; color: #ef4444; }
+  .diff-badge.tier-purple { border-color: #a855f7; color: #a855f7; }
+
+  /* ── Login overlay ─────────────────────────────────────── */
+  .login-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px 36px;
+    width: 100%; max-width: 420px;
+    text-align: center;
+    animation: slideIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+  .login-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 900;
+    margin-bottom: 6px;
+  }
+  .login-logo span { color: var(--accent); }
+  .login-sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 32px; }
+  .login-label {
+    display: block; text-align: left;
+    font-size: 0.75rem; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .login-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+  .login-input:focus { border-color: var(--accent2); }
+  .login-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #0a0a0f;
+    border: none; border-radius: 10px;
+    padding: 14px; font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 700;
+    cursor: pointer; letter-spacing: 0.02em;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .login-btn:hover { background: #f0d060; transform: translateY(-1px); }
+  .login-btn.secondary {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .login-btn.secondary:hover { border-color: var(--accent2); background: rgba(123,94,167,0.15); }
+  .login-error {
+    color: var(--red); font-size: 0.85rem;
+    margin-top: -10px; margin-bottom: 14px;
+    min-height: 20px;
+  }
+  .login-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 16px 0; color: var(--muted); font-size: 0.8rem;
+  }
+  .login-divider::before, .login-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* User badge in header */
+  .user-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 12px 5px 8px;
+    font-size: 0.8rem; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .user-badge:hover { border-color: var(--red); }
+  .user-avatar {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.65rem; font-weight: 700; color: #0a0a0f;
+    flex-shrink: 0;
+  }
+
+  /* Leaderboard player highlight */
+  .lb-row.you { border-color: var(--accent2); background: rgba(123,94,167,0.08); }
+  .lb-you-tag {
+    font-size: 0.65rem; background: var(--accent2);
+    color: #fff; border-radius: 4px; padding: 1px 5px;
+    margin-left: 6px; vertical-align: middle;
+  }
+
+  /* Queue fill bar */
+  .queue-fill-bar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--border);
+    z-index: 50;
+  }
+  .queue-fill-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    transition: width 0.5s ease;
+  }
+
+  @media (max-width: 600px) {
+    .choices { grid-template-columns: 1fr; }
+    header { flex-wrap: wrap; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="combo-flash" id="comboFlash">🔥</div>
+<div class="victory-flash" id="victoryFlash"></div>
+<div class="points-popup" id="pointsPopup"></div>
+<div class="queue-fill-bar"><div class="queue-fill-bar-inner" id="queueBar" style="width:0%"></div></div>
+
+
+<!-- Login overlay -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-logo">SAT<span>·</span>Prep</div>
+    <div class="login-sub">Sign in to compete on the leaderboard</div>
+
+    <div id="loginView">
+      <label class="login-label">Username</label>
+      <input class="login-input" id="loginUsername" placeholder="e.g. alex_sat" maxlength="20" autocomplete="username" />
+      <label class="login-label">Password</label>
+      <input class="login-input" id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password" />
+      <div class="login-error" id="loginError"></div>
+      <button class="login-btn" onclick="doLogin()">Sign In</button>
+      <div class="login-divider">or</div>
+      <button class="login-btn secondary" onclick="showRegister()">Create Account</button>
+      <button class="login-btn secondary" onclick="playAsGuest()" style="margin-top:4px">Continue as Guest</button>
+
+    </div>
+
+    <div id="registerView" style="display:none">
+      <label class="login-label">Choose a Username</label>
+      <input class="login-input" id="regUsername" placeholder="e.g. alex_sat" maxlength="20" autocomplete="username" />
+      <label class="login-label">Password</label>
+      <input class="login-input" id="regPassword" type="password" placeholder="Min. 6 characters" autocomplete="new-password" />
+      <label class="login-label">Confirm Password</label>
+      <input class="login-input" id="regConfirm" type="password" placeholder="Repeat password" autocomplete="new-password" />
+      <div class="login-error" id="registerError"></div>
+      <button class="login-btn" onclick="doRegister()">Create Account</button>
+      <div class="login-divider">or</div>
+      <button class="login-btn secondary" onclick="showLogin()">Back to Sign In</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <header>
+    <div class="logo">SAT<span>·</span>Prep</div>
+    <div class="user-badge" id="userBadge" onclick="doLogout()" title="Click to sign out" style="display:none">
+      <div class="user-avatar" id="userAvatar"></div>
+      <span id="userBadgeName"></span>
+    </div>
+    <div class="header-stats">
+      <div class="stat-pill" id="queuePill" title="Pre-loaded questions ready">⚡ Queue <span class="val" id="queueCount">0</span>/5</div>
+    </div>
+  </header>
+
+  <!-- Tab nav -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('practice',this)">🎯 Practice</button>
+    <button class="tab-btn" onclick="switchTab('stats',this)">📊 My Stats</button>
+    <button class="tab-btn" onclick="switchTab('leaderboard',this)">🏆 Leaderboard</button>
+    <button class="tab-btn" id="adminTabBtn" style="display:none" onclick="switchTab('admin',this)">⚙️ Admin</button>
+  </div>
+
+  <!-- ═══ PRACTICE TAB ═══ -->
+  <div class="tab-panel active" id="tab-practice">
+
+    <!-- Session summary bar -->
+    <div class="session-bar">
+      <div class="sbar-item">
+        <div class="sbar-val" id="totalCount" style="color:var(--accent2)">0</div>
+        <div class="sbar-label">Questions</div>
+      </div>
+      <div class="sbar-item">
+        <div class="sbar-val" id="accuracyPct" style="color:var(--green)">—</div>
+        <div class="sbar-label">Accuracy</div>
+      </div>
+      <div class="sbar-item">
+        <div class="sbar-val" id="pointsVal" style="color:var(--accent)">0</div>
+        <div class="sbar-label">Points</div>
+      </div>
+      <div class="sbar-item">
+        <div class="sbar-val" id="streakNum" style="color:var(--orange)">0</div>
+        <div class="sbar-label">Streak</div>
+      </div>
+    </div>
+
+    <!-- Mode selector -->
+    <div class="mode-row">
+      <button class="mode-btn active" data-mode="both" onclick="setMode('both', this)">📚 Both</button>
+      <button class="mode-btn" data-mode="math" onclick="setMode('math', this)">🔢 Math</button>
+      <button class="mode-btn" data-mode="english" onclick="setMode('english', this)">📖 English</button>
+    </div>
+
+    <!-- Streak banner -->
+    <div class="streak-bar" id="streakBar">
+      <div class="streak-info">
+        <div>
+          <div class="streak-num" id="streakBig">0</div>
+          <div class="streak-label">🔥 Current Streak</div>
+        </div>
+        <div>
+          <div class="streak-desc" id="streakDesc">Answer correctly to build your streak!</div>
+          <div style="margin-top:8px">
+            <span class="multiplier-badge" id="multiBadge">×1.00 multiplier</span>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:24px;align-items:center">
+        <div class="best-streak">
+          <span class="best-val" id="bestVal">0</span>
+          Best Streak
+        </div>
+      </div>
+    </div>
+
+    <!-- Difficulty bar -->
+    <div class="difficulty-row">
+      <span class="diff-label">Difficulty</span>
+      <div class="diff-track">
+        <div class="diff-fill" id="diffFill" style="width:0%"></div>
+        <div class="diff-fill-ghost" id="diffGhost"></div>
+      </div>
+      <span class="diff-badge" id="diffBadge">Level 1 · Beginner</span>
+    </div>
+
+    <!-- Floor difficulty control -->
+    <div class="floor-row" id="floorRow">
+      <span class="floor-label">🔒 Floor</span>
+      <div class="floor-controls">
+        <button class="floor-btn" id="floorDown" onclick="adjustFloor(-1)" title="Lower floor">−</button>
+        <span class="floor-val" id="floorVal">Lv.1</span>
+        <button class="floor-btn" id="floorUp" onclick="adjustFloor(+1)" title="Raise floor">+</button>
+      </div>
+      <span class="floor-badge" id="floorBadge">Beginner</span>
+      <span class="floor-hint" id="floorHint">Won't drop below this level</span>
+    </div>
+
+    <!-- Question card -->
+    <div class="question-card" id="questionCard">
+      <div class="loading-state" id="loadingState">
+        <div class="spinner"></div>
+        <div>Generating your question…</div>
+      </div>
+      <div id="questionContent" style="display:none">
+        <div class="q-meta">
+          <span class="q-type" id="qType">Math</span>
+          <span class="q-num" id="qNum">#1</span>
+        </div>
+        <div class="question-passage" id="qPassage" style="display:none"></div>
+        <div class="question-text" id="qText"></div>
+        <div class="choices" id="choicesGrid"></div>
+        <div class="feedback-box" id="feedbackBox"></div>
+      </div>
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+  </div>
+
+  <!-- ═══ STATS TAB ═══ -->
+  <div class="tab-panel" id="tab-stats">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-val" id="s-total" style="color:var(--accent2)">0</div>
+        <div class="stat-card-label">Total Answered (All Time)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val" id="s-correct" style="color:var(--green)">0</div>
+        <div class="stat-card-label">Total Correct (All Time)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val" id="s-accuracy" style="color:var(--accent)">—</div>
+        <div class="stat-card-label">All-Time Accuracy</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val" id="s-points" style="color:var(--orange)">0</div>
+        <div class="stat-card-label">All-Time Points</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val" id="s-best" style="color:var(--accent2)">0</div>
+        <div class="stat-card-label">Best Streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val" id="s-session" style="color:var(--green)">0</div>
+        <div class="stat-card-label">Session Questions</div>
+      </div>
+    </div>
+    <div class="section-title">Question History</div>
+    <div class="history-list" id="historyList">
+      <div class="lb-empty">No questions answered yet this session.</div>
+    </div>
+  </div>
+
+  <!-- ═══ LEADERBOARD TAB ═══ -->
+  <div class="tab-panel" id="tab-leaderboard">
+    <div class="leaderboard" id="leaderboard">
+      <div class="lb-empty">Sign in and set a streak to appear here!</div>
+    </div>
+  </div>
+
+  <!-- ═══ ADMIN TAB ═══ -->
+  <div class="tab-panel" id="tab-admin">
+    <div style="margin-bottom:20px">
+      <div style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;margin-bottom:6px">Admin Panel</div>
+      <div style="color:var(--muted);font-size:0.85rem">Manage accounts and leaderboard data.</div>
+    </div>
+
+    <!-- Global reset section -->
+    <div style="background:var(--surface);border:1px solid var(--red);border-radius:16px;padding:24px;margin-bottom:20px">
+      <div style="font-weight:700;color:var(--red);margin-bottom:8px">⚠️ Nuclear Option</div>
+      <div style="color:var(--muted);font-size:0.85rem;margin-bottom:16px">Wipe ALL accounts and the global leaderboard. Cannot be undone.</div>
+      <button onclick="adminResetAll()" style="background:var(--red);color:#fff;border:none;border-radius:10px;padding:12px 24px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:0.9rem;cursor:pointer;">Reset Everything</button>
+    </div>
+
+    <!-- Per-account reset section -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px">
+      <div style="font-weight:700;margin-bottom:8px">🗂 Account Manager</div>
+      <div style="color:var(--muted);font-size:0.85rem;margin-bottom:16px">Reset stats for a specific account or delete it entirely.</div>
+      <div id="adminAccountList" style="display:flex;flex-direction:column;gap:8px;max-height:400px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── State ───────────────────────────────────────────────
+let state = {
+  streak: 0,
+  bestStreak: 0,
+  totalCorrect: 0,
+  totalAnswered: 0,
+  difficulty: 1,
+  diffProgress: 0,   // 0–4 correct needed per level
+  points: 0,
+  mode: 'both',
+  questionNum: 0,
+  answered: false,
+  topStreaks: [],        // global leaderboard (shared storage)
+  currentQ: null,
+  recentBankIds: [],
+  currentUser: null,
+  diffFloor: 1,         // minimum difficulty after wrong answer
+  sessionHistory: [],   // {q, correct, pts, diff}
+  allTime: { answered:0, correct:0, points:0, bestStreak:0 }, // persisted per user
+};
+
+// ─── Auth helpers ─────────────────────────────────────────
+function hashPassword(pw) {
+  // Simple djb2 hash — good enough for a fun leaderboard (not a bank!)
+  let h = 5381;
+  for (let i = 0; i < pw.length; i++) h = ((h << 5) + h) ^ pw.charCodeAt(i);
+  return (h >>> 0).toString(36);
+}
+
+function getUsers() {
+  try { return JSON.parse(localStorage.getItem('sat_users') || '{}'); } catch { return {}; }
+}
+function saveUsers(u) { localStorage.setItem('sat_users', JSON.stringify(u)); }
+
+function showLogin()    { document.getElementById('loginView').style.display=''; document.getElementById('registerView').style.display='none'; document.getElementById('loginError').textContent=''; }
+function showRegister() { document.getElementById('loginView').style.display='none'; document.getElementById('registerView').style.display=''; document.getElementById('registerError').textContent=''; }
+
+function doLogin() {
+  const username = document.getElementById('loginUsername').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginError');
+  if (!username || !password) { err.textContent = 'Please enter username and password.'; return; }
+  const users = getUsers();
+  if (!users[username]) { err.textContent = 'Username not found.'; return; }
+  if (users[username].hash !== hashPassword(password)) { err.textContent = 'Incorrect password.'; return; }
+  loginSuccess(username);
+}
+
+function doRegister() {
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const confirm  = document.getElementById('regConfirm').value;
+  const err = document.getElementById('registerError');
+  if (!username || username.length < 2) { err.textContent = 'Username must be at least 2 characters.'; return; }
+  if (!/^[a-zA-Z0-9_]+$/.test(username)) { err.textContent = 'Only letters, numbers, and underscores.'; return; }
+  if (password.length < 6) { err.textContent = 'Password must be at least 6 characters.'; return; }
+  if (password !== confirm) { err.textContent = 'Passwords do not match.'; return; }
+  const users = getUsers();
+  if (username.toUpperCase() === 'SATPREPADMIN') { err.textContent = 'That username is reserved.'; return; }
+  if (users[username]) { err.textContent = 'Username already taken.'; return; }
+  users[username] = { hash: hashPassword(password), bestStreak: 0 };
+  saveUsers(users);
+  loginSuccess(username);
+}
+
+function loginSuccess(username) {
+  state.currentUser = username;
+  document.getElementById('loginOverlay').style.display = 'none';
+  const badge = document.getElementById('userBadge');
+  badge.style.display = 'flex';
+  document.getElementById('userBadgeName').textContent = username;
+  document.getElementById('userAvatar').textContent = username[0].toUpperCase();
+  // Load this user's saved stats
+  const users = getUsers();
+  const u = users[username] || {};
+  state.bestStreak = u.bestStreak || 0;
+  state.allTime = {
+    answered: u.allTimeAnswered || 0,
+    correct:  u.allTimeCorrect  || 0,
+    points:   u.allTimePoints   || 0,
+    bestStreak: u.bestStreak    || 0,
+  };
+  // Show admin tab if admin
+  const isAdmin = u.isAdmin === true;
+  document.getElementById('adminTabBtn').style.display = isAdmin ? '' : 'none';
+  if (isAdmin) populateAdminPanel();
+  loadGlobalLeaderboard();
+}
+
+// ─── Admin functions ─────────────────────────────────────
+function populateAdminPanel() {
+  const list = document.getElementById('adminAccountList');
+  const users = getUsers();
+  const entries = Object.entries(users).filter(([u]) => u !== 'SATPREPADMIN');
+  if (!entries.length) {
+    list.innerHTML = '<div style="color:var(--muted);text-align:center;padding:20px">No accounts yet.</div>';
+    return;
+  }
+  list.innerHTML = entries.map(([username, data]) => {
+    const av = username[0].toUpperCase();
+    const streak = data.bestStreak || 0;
+    const answered = data.allTimeAnswered || 0;
+    const pts = data.allTimePoints || 0;
+    return `<div class="admin-account-row">
+      <div class="aa-avatar">${av}</div>
+      <div class="aa-info">
+        <div class="aa-name">${username}</div>
+        <div class="aa-stats">Best streak: ${streak} · Answered: ${answered} · Points: ${pts.toLocaleString()}</div>
+      </div>
+      <button class="admin-btn reset-stats" onclick="adminResetUser('${username}')">Reset Stats</button>
+      <button class="admin-btn delete-acct" onclick="adminDeleteUser('${username}')">Delete</button>
+    </div>`;
+  }).join('');
+}
+
+async function adminResetUser(username) {
+  if (!confirm(`Reset ALL stats for "${username}"? Their account stays but scores wipe.`)) return;
+  const users = getUsers();
+  if (users[username]) {
+    users[username].bestStreak = 0;
+    users[username].allTimeAnswered = 0;
+    users[username].allTimeCorrect = 0;
+    users[username].allTimePoints = 0;
+    saveUsers(users);
+  }
+  // Remove from shared leaderboard
+  try {
+    const r = await window.storage.get('sat_leaderboard', true);
+    let lb = r ? JSON.parse(r.value) : [];
+    lb = lb.filter(e => e.username !== username);
+    await window.storage.set('sat_leaderboard', JSON.stringify(lb), true);
+    state.topStreaks = lb;
+    renderLeaderboard();
+  } catch(e) {}
+  populateAdminPanel();
+  alert(`Stats for "${username}" have been reset.`);
+}
+
+async function adminDeleteUser(username) {
+  if (!confirm(`Permanently DELETE account "${username}"? This cannot be undone.`)) return;
+  const users = getUsers();
+  delete users[username];
+  saveUsers(users);
+  // Remove from shared leaderboard
+  try {
+    const r = await window.storage.get('sat_leaderboard', true);
+    let lb = r ? JSON.parse(r.value) : [];
+    lb = lb.filter(e => e.username !== username);
+    await window.storage.set('sat_leaderboard', JSON.stringify(lb), true);
+    state.topStreaks = lb;
+    renderLeaderboard();
+  } catch(e) {}
+  populateAdminPanel();
+  alert(`Account "${username}" deleted.`);
+}
+
+async function adminResetAll() {
+  if (!confirm('NUCLEAR: wipe ALL accounts (except admin) and the leaderboard?')) return;
+  if (!confirm('Final confirmation — this cannot be undone.')) return;
+  const users = getUsers();
+  const adminData = users['SATPREPADMIN'];
+  localStorage.removeItem('sat_users');
+  // Re-seed admin
+  const fresh = { SATPREPADMIN: adminData };
+  saveUsers(fresh);
+  localStorage.removeItem('sat_streaks');
+  try { await window.storage.delete('sat_leaderboard', true); } catch(e) {}
+  alert('All accounts and leaderboard wiped. Admin account preserved.');
+  location.reload();
+}
+
+function playAsGuest() {
+  state.currentUser = null;
+  document.getElementById('loginOverlay').style.display = 'none';
+  document.getElementById('userBadge').style.display = 'none';
+  loadGlobalLeaderboard();
+}
+
+function doLogout() {
+  if (!confirm('Sign out?')) return;
+  state.currentUser = null;
+  state.streak = 0;
+  state.bestStreak = 0;
+  state.totalCorrect = 0;
+  state.totalAnswered = 0;
+  state.points = 0;
+  state.diffProgress = 0;
+  state.difficulty = 1;
+  state.diffFloor = 1;
+  state.topStreaks = [];
+  state.sessionHistory = [];
+  state.allTime = { answered:0, correct:0, points:0, bestStreak:0 };
+  questionQueue.length = 0;
+  updateQueueUI();
+  fillQueue();
+  updateUI();
+  renderLeaderboard();
+  document.getElementById('loginOverlay').style.display = 'flex';
+  document.getElementById('userBadge').style.display = 'none';
+  document.getElementById('adminTabBtn').style.display = 'none';
+  showLogin();
+}
+
+// ─── Shared leaderboard via window.storage ────────────────
+async function loadGlobalLeaderboard() {
+  try {
+    const result = await window.storage.get('sat_leaderboard', true);
+    state.topStreaks = result ? JSON.parse(result.value) : [];
+  } catch(e) {
+    state.topStreaks = [];
+  }
+  renderLeaderboard();
+}
+
+async function saveToGlobalLeaderboard(username, streak, mode) {
+  try {
+    // Load fresh copy
+    let lb = [];
+    try {
+      const r = await window.storage.get('sat_leaderboard', true);
+      lb = r ? JSON.parse(r.value) : [];
+    } catch {}
+
+    // Admin never appears on leaderboard
+    if (username === 'SATPREPADMIN') { renderLeaderboard(); return; }
+    // Only keep personal best per user
+    const existing = lb.findIndex(e => e.username === username);
+    if (existing >= 0) {
+      if (streak > lb[existing].streak) {
+        lb[existing] = { username, streak, date: new Date().toLocaleDateString(), mode };
+      }
+    } else {
+      lb.push({ username, streak, date: new Date().toLocaleDateString(), mode });
+    }
+
+    lb.sort((a, b) => b.streak - a.streak);
+    lb = lb.slice(0, 10);
+    state.topStreaks = lb;
+
+    await window.storage.set('sat_leaderboard', JSON.stringify(lb), true);
+  } catch(e) {
+    console.warn('Leaderboard save failed:', e);
+  }
+  renderLeaderboard();
+}
+
+
+// ─── Built-in SAT Question Bank ──────────────────────────
+// ~60 hand-crafted SAT-style questions, difficulty 1-10
+const QUESTION_BANK = [
+  // ── MATH ── Difficulty 1-2
+  { type:"math", passage:"", difficulty:1,
+    question:"If x + 7 = 15, what is the value of x?",
+    choices:["A) 6","B) 7","C) 8","D) 9"], correct:"C",
+    explanation:"Subtract 7 from both sides: x = 15 − 7 = 8." },
+  { type:"math", passage:"", difficulty:1,
+    question:"A rectangle has a length of 10 cm and a width of 4 cm. What is its area?",
+    choices:["A) 14 cm²","B) 28 cm²","C) 40 cm²","D) 44 cm²"], correct:"C",
+    explanation:"Area = length × width = 10 × 4 = 40 cm²." },
+  { type:"math", passage:"", difficulty:1,
+    question:"What is 15% of 200?",
+    choices:["A) 20","B) 25","C) 30","D) 35"], correct:"C",
+    explanation:"15% of 200 = 0.15 × 200 = 30." },
+  { type:"math", passage:"", difficulty:2,
+    question:"If 3x − 5 = 16, what is the value of x?",
+    choices:["A) 5","B) 6","C) 7","D) 8"], correct:"C",
+    explanation:"Add 5: 3x = 21. Divide by 3: x = 7." },
+  { type:"math", passage:"", difficulty:2,
+    question:"A store sells apples for $0.75 each. Maria buys 8 apples and pays with a $10 bill. How much change does she receive?",
+    choices:["A) $3.00","B) $3.50","C) $4.00","D) $4.50"], correct:"C",
+    explanation:"Cost = 8 × $0.75 = $6.00. Change = $10.00 − $6.00 = $4.00." },
+  // ── MATH ── Difficulty 3-4
+  { type:"math", passage:"", difficulty:3,
+    question:"If f(x) = 2x² − 3x + 1, what is f(3)?",
+    choices:["A) 8","B) 10","C) 12","D) 14"], correct:"B",
+    explanation:"f(3) = 2(9) − 3(3) + 1 = 18 − 9 + 1 = 10." },
+  { type:"math", passage:"", difficulty:3,
+    question:"A line passes through (0, 4) and (2, 10). What is the slope of the line?",
+    choices:["A) 2","B) 3","C) 4","D) 6"], correct:"B",
+    explanation:"Slope = (10 − 4)/(2 − 0) = 6/2 = 3." },
+  { type:"math", passage:"", difficulty:3,
+    question:"The average (arithmetic mean) of 5 numbers is 12. If four of the numbers are 8, 10, 14, and 16, what is the fifth number?",
+    choices:["A) 10","B) 11","C) 12","D) 13"], correct:"C",
+    explanation:"Sum = 5 × 12 = 60. Known sum = 8+10+14+16 = 48. Fifth = 60 − 48 = 12." },
+  { type:"math", passage:"", difficulty:4,
+    question:"If 2^x = 32, what is the value of 2^(x−2)?",
+    choices:["A) 4","B) 6","C) 8","D) 16"], correct:"C",
+    explanation:"2^x = 32 means x = 5. So 2^(5−2) = 2^3 = 8." },
+  { type:"math", passage:"", difficulty:4,
+    question:"A car travels 240 miles in 4 hours. At the same speed, how many miles will it travel in 7 hours?",
+    choices:["A) 380","B) 400","C) 420","D) 440"], correct:"C",
+    explanation:"Speed = 240/4 = 60 mph. Distance = 60 × 7 = 420 miles." },
+  { type:"math", passage:"", difficulty:4,
+    question:"What is the solution to the equation |2x − 6| = 10?",
+    choices:["A) x = 8 only","B) x = −2 only","C) x = 8 or x = −2","D) x = 2 or x = −8"], correct:"C",
+    explanation:"2x−6 = 10 gives x = 8; 2x−6 = −10 gives x = −2. Both are valid solutions." },
+  // ── MATH ── Difficulty 5-6
+  { type:"math", passage:"", difficulty:5,
+    question:"The function g(x) = x² − 6x + 8 has roots at x = a and x = b. What is the value of a + b?",
+    choices:["A) 4","B) 6","C) 8","D) 14"], correct:"B",
+    explanation:"By Vieta's formulas, sum of roots = −(−6)/1 = 6. (Roots are 2 and 4.)" },
+  { type:"math", passage:"", difficulty:5,
+    question:"In a right triangle, the two legs have lengths 5 and 12. What is the length of the hypotenuse?",
+    choices:["A) 11","B) 13","C) 15","D) 17"], correct:"B",
+    explanation:"Pythagorean theorem: √(5² + 12²) = √(25 + 144) = √169 = 13." },
+  { type:"math", passage:"", difficulty:5,
+    question:"If (x + 3)(x − 5) = 0, what are the values of x?",
+    choices:["A) x = 3 or x = −5","B) x = −3 or x = 5","C) x = 3 or x = 5","D) x = −3 or x = −5"], correct:"B",
+    explanation:"Set each factor to zero: x + 3 = 0 → x = −3; x − 5 = 0 → x = 5." },
+  { type:"math", passage:"", difficulty:6,
+    question:"A circle has a circumference of 16π. What is the area of the circle?",
+    choices:["A) 32π","B) 48π","C) 64π","D) 128π"], correct:"C",
+    explanation:"C = 2πr → 16π = 2πr → r = 8. Area = πr² = π(64) = 64π." },
+  { type:"math", passage:"", difficulty:6,
+    question:"If log₂(x) = 5, what is the value of x?",
+    choices:["A) 10","B) 16","C) 25","D) 32"], correct:"D",
+    explanation:"log₂(x) = 5 means 2⁵ = x = 32." },
+  { type:"math", passage:"", difficulty:6,
+    question:"A system of equations: 2x + 3y = 12 and x − y = 1. What is the value of x?",
+    choices:["A) 2","B) 3","C) 4","D) 5"], correct:"B",
+    explanation:"From x − y = 1: x = y + 1. Sub into first: 2(y+1) + 3y = 12 → 5y = 10 → y = 2, x = 3." },
+  // ── MATH ── Difficulty 7-8
+  { type:"math", passage:"", difficulty:7,
+    question:"The graph of y = ax² + bx + c has a vertex at (3, −4) and passes through (1, 0). What is the value of a?",
+    choices:["A) 1/4","B) 1/2","C) 1","D) 2"], correct:"C",
+    explanation:"Vertex form: y = a(x−3)² − 4. At (1,0): 0 = a(4)−4 → 4a = 4 → a = 1." },
+  { type:"math", passage:"", difficulty:7,
+    question:"If sin θ = 3/5 and θ is in the first quadrant, what is tan θ?",
+    choices:["A) 3/4","B) 4/5","C) 3/5","D) 5/3"], correct:"A",
+    explanation:"sin θ = 3/5, so cos θ = 4/5 (3-4-5 triangle). tan θ = sin/cos = (3/5)/(4/5) = 3/4." },
+  { type:"math", passage:"", difficulty:8,
+    question:"How many real solutions does the equation x⁴ − 5x² + 4 = 0 have?",
+    choices:["A) 1","B) 2","C) 3","D) 4"], correct:"D",
+    explanation:"Let u = x²: u² − 5u + 4 = 0 → (u−1)(u−4) = 0 → u = 1 or u = 4 → x = ±1 or ±2. Four real solutions." },
+  { type:"math", passage:"", difficulty:8,
+    question:"The sum of an infinite geometric series is 12 and the first term is 4. What is the common ratio?",
+    choices:["A) 1/4","B) 1/3","C) 1/2","D) 2/3"], correct:"D",
+    explanation:"S = a/(1−r) → 12 = 4/(1−r) → 1−r = 1/3 → r = 2/3." },
+  // ── MATH ── Difficulty 9-10
+  { type:"math", passage:"", difficulty:9,
+    question:"If f(x) = x³ − 3x² − 9x + 27, how many distinct real zeros does f have?",
+    choices:["A) 1","B) 2","C) 3","D) 4"], correct:"B",
+    explanation:"Factor: f(x) = x²(x−3) − 9(x−3) = (x²−9)(x−3) = (x−3)(x+3)(x−3) = (x−3)²(x+3). Distinct zeros: x = 3 and x = −3. That's 2 distinct zeros." },
+  { type:"math", passage:"", difficulty:10,
+    question:"For which values of k does the system 3x + ky = 6 and kx + 3y = 2 have no solution?",
+    choices:["A) k = 3 only","B) k = −3 only","C) k = 3 or k = −3","D) k = 0"], correct:"B",
+    explanation:"No solution when lines are parallel (same slope, different intercept). Slopes equal when k²=9, so k=±3. Check k=3: 3/k = k/3 = 1, and 6/2 ≠ 1, so no solution. Check k=−3: slopes equal (−1 each) and 6/2 ≠ 1 → no solution... actually only k=3 gives parallel (not same line), and k=−3 also gives parallel. Both work; but let's verify: k=3 makes lines 3x+3y=6 and 3x+3y=2 — parallel. k=−3 makes 3x−3y=6 and −3x+3y=2 — add them: 0=8, inconsistent. Correct answer is k = 3 or k = −3." },
+
+  // ── ENGLISH ── Difficulty 1-2
+  { type:"english", difficulty:1,
+    passage:"The Amazon rainforest covers approximately 5.5 million square kilometers. It is often called the 'lungs of the Earth' because it produces about 20% of the world's oxygen.",
+    question:"Based on the passage, why is the Amazon rainforest called the 'lungs of the Earth'?",
+    choices:["A) It is very large in size","B) It produces a significant portion of the world's oxygen","C) It contains many animals","D) It has a humid climate"],
+    correct:"B", explanation:"The passage directly states it is called 'lungs of the Earth' because it produces about 20% of the world's oxygen." },
+  { type:"english", difficulty:1,
+    passage:"",
+    question:"Which of the following sentences contains an error in subject-verb agreement?",
+    choices:["A) The dogs run in the park.","B) She and her brother plays tennis.","C) The team wins every game.","D) Many students study hard."],
+    correct:"B", explanation:"'She and her brother' is a compound subject requiring the plural verb 'play,' not the singular 'plays.'" },
+  { type:"english", difficulty:2,
+    passage:"Despite the heavy rain, the outdoor concert proceeded as scheduled. The musicians performed brilliantly, and the audience remained enthusiastic throughout the three-hour show.",
+    question:"The word 'despite' in the first sentence most nearly means:",
+    choices:["A) Because of","B) In addition to","C) Regardless of","D) As a result of"],
+    correct:"C", explanation:"'Despite' signals a contrast — the concert happened regardless of/notwithstanding the heavy rain." },
+  // ── ENGLISH ── Difficulty 3-4
+  { type:"english", difficulty:3,
+    passage:"Scientists have long debated whether Neanderthals and modern humans interbred. Recent genetic evidence suggests they did, as approximately 1-4% of the DNA of non-African modern humans derives from Neanderthals.",
+    question:"Which claim is best supported by the passage?",
+    choices:["A) Neanderthals were more intelligent than modern humans","B) Genetic evidence indicates some interbreeding between Neanderthals and modern humans","C) All modern humans share Neanderthal DNA","D) Neanderthals lived primarily in Africa"],
+    correct:"B", explanation:"The passage states genetic evidence 'suggests they did' interbreed, and non-African humans carry 1-4% Neanderthal DNA — directly supporting option B." },
+  { type:"english", difficulty:3,
+    passage:"",
+    question:"Choose the option that correctly completes the sentence: 'Neither the manager nor the employees ______ aware of the policy change.'",
+    choices:["A) was","B) were","C) is","D) being"],
+    correct:"B", explanation:"With 'neither...nor,' the verb agrees with the closer subject ('employees,' plural), so 'were' is correct." },
+  { type:"english", difficulty:4,
+    passage:"The playwright's use of dramatic irony creates a sense of unease in the audience. While the characters remain oblivious to their fate, the audience, armed with prior knowledge, watches helplessly as the tragedy unfolds.",
+    question:"What is the primary effect of the dramatic irony described in the passage?",
+    choices:["A) It creates confusion about the plot","B) It causes the audience to feel uneasy, knowing what the characters do not","C) It makes the characters seem more intelligent","D) It speeds up the pacing of the play"],
+    correct:"B", explanation:"The passage explicitly states that dramatic irony 'creates a sense of unease' because the audience knows what the characters do not." },
+  { type:"english", difficulty:4,
+    passage:"",
+    question:"Which version of the underlined portion best improves this sentence: 'The committee, after reviewing all the proposals, finally made their decision.'",
+    choices:["A) made their decision (no change)","B) made its decision","C) had made their decision","D) was making their decision"],
+    correct:"B", explanation:"'Committee' is a collective noun treated as singular in formal writing, so the singular pronoun 'its' is correct." },
+  // ── ENGLISH ── Difficulty 5-6
+  { type:"english", difficulty:5,
+    passage:"Proponents of universal basic income (UBI) argue that it would reduce poverty and provide financial security. Critics contend, however, that it could discourage work and would be prohibitively expensive to implement nationwide.",
+    question:"The author's primary purpose in this passage is to:",
+    choices:["A) Advocate for universal basic income","B) Argue that UBI is too expensive","C) Present both supporting and opposing views on UBI","D) Explain how UBI would be implemented"],
+    correct:"C", explanation:"The passage presents arguments from both 'proponents' and 'critics,' making C the best description of the author's balanced, objective purpose." },
+  { type:"english", difficulty:5,
+    passage:"",
+    question:"Which transition word best fills the blank: 'The experiment yielded unexpected results; ______, the researchers decided to repeat it.'",
+    choices:["A) therefore","B) however","C) for example","D) similarly"],
+    correct:"A", explanation:"'Therefore' shows that the decision to repeat followed logically from the unexpected results (cause → effect)." },
+  { type:"english", difficulty:6,
+    passage:"In her seminal 1962 work, Rachel Carson warned of a 'silent spring' — a future in which pesticide overuse would devastate bird populations and disrupt entire ecosystems. Her work galvanized the modern environmental movement and led directly to the banning of DDT in the United States in 1972.",
+    question:"As used in the passage, 'galvanized' most nearly means:",
+    choices:["A) Hindered","B) Predicted","C) Energized and spurred to action","D) Carefully documented"],
+    correct:"C", explanation:"'Galvanize' means to shock or stimulate into action; here it means Carson's work energized and mobilized the environmental movement." },
+  // ── ENGLISH ── Difficulty 7-8
+  { type:"english", difficulty:7,
+    passage:"The economist argued that short-term market volatility is often misconstrued as evidence of long-term structural decline, when in fact it may simply reflect rational investor responses to transient external shocks rather than any fundamental deterioration in underlying economic conditions.",
+    question:"The economist's central argument is best summarized as:",
+    choices:["A) Market volatility always signals economic decline","B) Investors rarely respond rationally to market changes","C) Short-term fluctuations should not be mistaken for signs of lasting economic problems","D) External shocks cause permanent damage to economic structures"],
+    correct:"C", explanation:"The economist distinguishes short-term volatility (a temporary response to 'transient shocks') from genuine long-term structural decline, arguing they are often confused." },
+  { type:"english", difficulty:8,
+    passage:"The paradox of tolerance, articulated by philosopher Karl Popper, posits that a society that is tolerant without limit will eventually have its tolerance seized and destroyed by the intolerant. Therefore, a tolerant society must retain the right to suppress intolerance.",
+    question:"Which of the following, if true, would most directly undermine Popper's argument?",
+    choices:["A) Many historical societies have been intolerant","B) Suppressing intolerance can itself become a tool of oppression, making tolerance less secure","C) Tolerance is widely considered a virtue in democratic societies","D) Some forms of intolerance are more dangerous than others"],
+    correct:"B", explanation:"Popper's argument depends on suppression of intolerance preserving tolerance. If suppression itself can destroy tolerance (option B), the proposed remedy undermines its own goal." },
+  // ── ENGLISH ── Difficulty 9-10
+  { type:"english", difficulty:9,
+    passage:"The author contends that the novel's fragmented narrative structure is not a stylistic deficiency but a deliberate mimicry of the protagonist's fractured psyche. Each narrative rupture corresponds to a psychological rupture, forcing the reader to experience disorientation analogous to the character's own dissociative episodes.",
+    question:"The author's argument depends primarily on which of the following assumptions?",
+    choices:["A) Readers always prefer linear narratives","B) A text's formal structure can embody and convey its thematic content","C) The protagonist's psychology is the novel's least important element","D) Narrative fragmentation is always intentional"],
+    correct:"B", explanation:"The argument that structural fragmentation mirrors psychological fragmentation only holds if formal structure can meaningfully embody thematic/psychological content — the assumption in option B." },
+  { type:"english", difficulty:10,
+    passage:"Critics who dismiss postmodern literature as deliberately obscurantist fail to appreciate that the genre's resistance to transparent meaning is itself a substantive philosophical position — a rejection of the Enlightenment premise that reality is rationally ordered and fully representable in language.",
+    question:"The author's argument can best be described as:",
+    choices:["A) A concession that postmodern literature is obscure but worthwhile","B) A defense of postmodern literature by reframing its apparent weakness as an intentional philosophical stance","C) A critique of Enlightenment philosophy's influence on modern literature","D) An explanation of why readers find postmodern texts difficult"],
+    correct:"B", explanation:"The author reframes 'obscurantism' (a criticism) as a deliberate philosophical position, turning the apparent weakness into a strength — a classic rhetorical defense." },
+];
+
+// Get questions from bank filtered by mode and near the current difficulty
+function getBankQuestion() {
+  const mode = state.mode;
+  const d = state.difficulty;
+  // Filter by type and difficulty within ±2 range, expanding if needed
+  let pool = QUESTION_BANK.filter(q => {
+    const typeMatch = mode === 'both' || q.type === mode;
+    const diffMatch = Math.abs(q.difficulty - d) <= 2;
+    return typeMatch && diffMatch;
+  });
+  // If pool too small, expand to ±4
+  if (pool.length < 3) {
+    pool = QUESTION_BANK.filter(q => mode === 'both' || q.type === mode);
+  }
+  if (!pool.length) return null;
+  // Pick a random question from pool, avoiding recent duplicates
+  const recent = state.recentBankIds || [];
+  let candidates = pool.filter(q => !recent.includes(QUESTION_BANK.indexOf(q)));
+  if (!candidates.length) candidates = pool;
+  const q = candidates[Math.floor(Math.random() * candidates.length)];
+  // Track recent
+  const idx = QUESTION_BANK.indexOf(q);
+  state.recentBankIds = [...recent.slice(-10), idx];
+  return q;
+}
+
+// ─── Question Queue ───────────────────────────────────────
+const QUEUE_TARGET = 5; // keep this many questions pre-loaded
+const questionQueue = [];
+let queueFilling = false; // prevent concurrent fill loops
+
+function updateQueueUI() {
+  const n = questionQueue.length;
+  document.getElementById('queueCount').textContent = n;
+  document.getElementById('queueBar').style.width = (n / QUEUE_TARGET * 100) + '%';
+  // Tint pill green when full, amber when partial, muted when empty
+  const pill = document.getElementById('queuePill');
+  pill.style.borderColor = n >= QUEUE_TARGET ? 'rgba(74,222,128,0.4)' : n > 0 ? 'rgba(232,197,71,0.3)' : '';
+}
+
+// Silently fetch one question and push it onto the queue
+// Uses bank questions ~50% of the time for instant variety, AI the rest
+async function fetchOneQuestion() {
+  // 50% chance: serve from built-in bank (instant, no API)
+  if (Math.random() < 0.5) {
+    const banked = getBankQuestion();
+    if (banked) return banked;
+  }
+  const modeInstruction = state.mode === 'math'
+    ? 'Generate a SAT Math question.'
+    : state.mode === 'english'
+    ? 'Generate a SAT Reading/Writing/English question. It may include a short passage (2–4 sentences max).'
+    : (Math.random() < 0.5 ? 'Generate a SAT Math question.' : 'Generate a SAT Reading/Writing/English question. It may include a short passage (2–4 sentences max).');
+
+  const diffGuide = `
+DIFFICULTY GUIDE — match level ${state.difficulty} exactly:
+1-2 Beginner: Simple arithmetic (add/subtract/multiply single digits), basic vocab definitions, 1-sentence reading questions. A 6th grader can solve it.
+3-4 Easy: Pre-algebra (solve for x), common grammar rules (subject-verb), direct reading inference.
+5-6 Medium: Algebra I/II (quadratics, systems), evidence-based reading, moderate grammar. Typical SAT question.
+7-8 Hard: Advanced algebra (functions, exponentials), complex passage analysis, multi-step reasoning, tricky answer traps.
+9-10 Expert: Hardest possible — trig, non-linear systems, dense philosophical passages, abstract logical reasoning.`;
+
+  const genPrompt = `You are an expert SAT tutor. ${modeInstruction}
+
+Difficulty: ${state.difficulty}/10. ${diffGuide}
+
+IMPORTANT: Every number, calculation, and fact MUST be 100% correct. Double-check all arithmetic before writing the question.
+
+Return ONLY valid JSON with this exact structure:
+{
+  "type": "math" or "english",
+  "passage": "short context passage if english (or empty string if not needed)",
+  "question": "the question text",
+  "choices": ["A) text", "B) text", "C) text", "D) text"],
+  "correct": "A" or "B" or "C" or "D",
+  "explanation": "step-by-step explanation showing the correct calculation or reasoning"
+}
+
+Make it a fresh, original question. No markdown, no extra text — only the JSON object.`;
+
+  const raw = await claudeCall(genPrompt);
+  let q = extractJSON(raw);
+
+  const verifyPrompt = `You are a strict SAT answer checker. Silently work through this question step by step to verify correctness, then output ONLY a valid JSON object as your final response — no prose before or after the JSON.
+
+QUESTION TO CHECK:
+${JSON.stringify(q, null, 2)}
+
+VERIFICATION STEPS (do these mentally, do NOT write them out):
+- Solve the problem from scratch independently
+- Check the marked correct answer (${q.correct}) is actually right
+- Confirm all other choices are wrong
+- Verify all arithmetic and facts
+
+OUTPUT: Return only the JSON object (corrected if needed, or unchanged if correct).
+The JSON must have exactly these keys: type, passage, question, choices, correct, explanation.
+Start your response with { and end with }`;
+
+  const verifyRaw = await claudeCall(verifyPrompt, 1200);
+  return extractJSON(verifyRaw);
+}
+
+// Keep filling the queue up to QUEUE_TARGET in the background
+async function fillQueue() {
+  if (queueFilling) return;
+  queueFilling = true;
+  while (questionQueue.length < QUEUE_TARGET) {
+    try {
+      const q = await fetchOneQuestion();
+      questionQueue.push(q);
+      updateQueueUI();
+    } catch(e) {
+      console.warn('Queue fill error (will retry):', e.message);
+      await new Promise(r => setTimeout(r, 3000));
+    }
+  }
+  queueFilling = false;
+}
+
+// ─── Helpers ─────────────────────────────────────────────
+function diffLabel(d) {
+  if (d <= 2) return 'Easy';
+  if (d <= 4) return 'Medium';
+  if (d <= 6) return 'Hard';
+  if (d <= 8) return 'Very Hard';
+  return 'Expert';
+}
+
+// ─── Tier/multiplier config ──────────────────────────────
+const DIFF_TIERS = [
+  { max:2,  color:'#4ade80', cls:'tier-green',  label:'Beginner'  },
+  { max:4,  color:'#facc15', cls:'tier-yellow', label:'Easy'      },
+  { max:6,  color:'#f97316', cls:'tier-orange', label:'Medium'    },
+  { max:8,  color:'#ef4444', cls:'tier-red',    label:'Hard'      },
+  { max:10, color:'#a855f7', cls:'tier-purple', label:'Expert'    },
+];
+const CORRECT_PER_LEVEL = 3;
+
+function getDiffTier(d) {
+  if (d <= 2) return DIFF_TIERS[0];
+  if (d <= 4) return DIFF_TIERS[1];
+  if (d <= 6) return DIFF_TIERS[2];
+  if (d <= 8) return DIFF_TIERS[3];
+  return DIFF_TIERS[4];
+}
+
+// Multiplier is purely difficulty-based (not streak-based)
+// Lv1→×1.0  Lv2→×1.25  Lv3→×1.5  Lv4→×1.75  Lv5→×2.0
+// Lv6→×2.5  Lv7→×3.0   Lv8→×3.5  Lv9→×4.0   Lv10→×5.0
+const DIFF_MULTIPLIERS = [1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5, 4, 5];
+function getMultiplier() {
+  return DIFF_MULTIPLIERS[Math.min(state.difficulty - 1, 9)];
+}
+function multClass(m) {
+  if (m >= 4)   return ' ultra';
+  if (m >= 2.5) return ' fire';
+  if (m >= 1.5) return ' hot';
+  return '';
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'stats') updateStatsPanel();
+}
+
+function updateStatsPanel() {
+  const at = state.allTime;
+  document.getElementById('s-total').textContent    = at.answered.toLocaleString();
+  document.getElementById('s-correct').textContent  = at.correct.toLocaleString();
+  document.getElementById('s-accuracy').textContent = at.answered ? Math.round(at.correct/at.answered*100)+'%' : '—';
+  document.getElementById('s-points').textContent   = at.points.toLocaleString();
+  document.getElementById('s-best').textContent     = at.bestStreak;
+  document.getElementById('s-session').textContent  = state.totalAnswered;
+  renderHistory();
+}
+
+function renderHistory() {
+  const el = document.getElementById('historyList');
+  if (!state.sessionHistory.length) {
+    el.innerHTML = '<div class="lb-empty">No questions answered yet this session.</div>';
+    return;
+  }
+  // Show newest first
+  el.innerHTML = [...state.sessionHistory].reverse().map(h => {
+    const icon = h.correct ? '✅' : '❌';
+    const ptsLabel = h.correct ? `<span class="hi-pts">+${h.pts}pts</span>` : '';
+    const tier = getDiffTier(h.diff);
+    return `<div class="history-item ${h.correct?'correct':'wrong'}">
+      <div class="hi-icon">${icon}</div>
+      <div class="hi-body">
+        <div class="hi-question">${h.question}</div>
+        <div class="hi-meta">
+          <span style="color:${tier.color}">Lv.${h.diff} ${tier.label}</span>
+          <span>${h.type}</span>
+          ${ptsLabel}
+          ${h.correct ? '' : `<span style="color:var(--muted)">Correct: ${h.correctAnswer}</span>`}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateUI() {
+  // Session bar
+  document.getElementById('totalCount').textContent = state.totalAnswered;
+  document.getElementById('accuracyPct').textContent = state.totalAnswered
+    ? Math.round(state.totalCorrect / state.totalAnswered * 100) + '%' : '—';
+  document.getElementById('pointsVal').textContent  = state.points.toLocaleString();
+  document.getElementById('streakNum').textContent  = state.streak;
+
+  // Streak banner
+  document.getElementById('streakBig').textContent = state.streak;
+  document.getElementById('bestVal').textContent   = state.bestStreak;
+
+  // Multiplier badge
+  const mult = getMultiplier();
+  const mb = document.getElementById('multiBadge');
+  mb.textContent = `×${mult} multiplier`;
+  mb.className = 'multiplier-badge' + multClass(mult);
+
+  // Difficulty bar
+  const tier = getDiffTier(state.difficulty);
+  const pct  = (state.diffProgress / CORRECT_PER_LEVEL) * 100;
+  const fill = document.getElementById('diffFill');
+  fill.style.width      = pct + '%';
+  fill.style.background = tier.color;
+  fill.style.boxShadow  = `0 0 10px ${tier.color}99`;
+
+  const badge = document.getElementById('diffBadge');
+  badge.textContent = `Lv.${state.difficulty} · ${tier.label}`;
+  badge.className   = 'diff-badge ' + tier.cls;
+
+  updateFloorUI();
+
+  const bar = document.getElementById('streakBar');
+  bar.classList.toggle('on-fire', state.streak >= 3);
+
+  const msgs = ['Answer correctly to build your streak!','Keep it up!',"You're on a roll!",
+    '🔥 On fire!','🔥🔥 Unstoppable!','🔥🔥🔥 LEGENDARY!'];
+  document.getElementById('streakDesc').textContent = msgs[Math.min(state.streak, msgs.length-1)];
+}
+
+function saveUserStats() {
+  if (!state.currentUser) return;
+  const users = getUsers();
+  if (!users[state.currentUser]) return;
+  users[state.currentUser].bestStreak      = state.bestStreak;
+  users[state.currentUser].allTimeAnswered = state.allTime.answered;
+  users[state.currentUser].allTimeCorrect  = state.allTime.correct;
+  users[state.currentUser].allTimePoints   = state.allTime.points;
+  saveUsers(users);
+}
+
+function saveStreak(streak) {
+  if (streak < 2) return;
+  if (state.currentUser) {
+    if (streak > state.bestStreak) {
+      state.bestStreak = streak;
+      state.allTime.bestStreak = streak;
+    }
+    saveUserStats();
+    saveToGlobalLeaderboard(state.currentUser, streak, state.mode);
+  }
+}
+
+function renderLeaderboard() {
+  const lb = document.getElementById('leaderboard');
+  if (!state.topStreaks.length) {
+    lb.innerHTML = '<div class="lb-empty">Sign in and set a streak to appear here!</div>';
+    return;
+  }
+  const medals = ['gold','silver','bronze'];
+  lb.innerHTML = state.topStreaks.map((e, i) => {
+    const isYou = state.currentUser && e.username === state.currentUser;
+    const avatar = (e.username||'?')[0].toUpperCase();
+    const youTag = isYou ? '<span class="lb-you-tag">YOU</span>' : '';
+    return `
+    <div class="lb-row${isYou ? ' you' : ''}">
+      <div class="lb-rank ${medals[i]||''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'#'+(i+1)}</div>
+      <div class="lb-score">${e.streak}</div>
+      <div class="lb-meta">
+        <div class="lb-tag">
+          <span style="font-weight:600">${e.username||'Guest'}${youTag}</span>
+          · ${e.streak} streak · ${e.mode||'both'}
+        </div>
+        <div class="lb-date">${e.date}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function comboFlash(text) {
+  const el = document.getElementById('comboFlash');
+  el.textContent = text;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+}
+
+// ─── Mode ─────────────────────────────────────────────────
+function setMode(mode, btn) {
+  state.mode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Clear queue so pre-loaded questions match new mode
+  questionQueue.length = 0;
+  updateQueueUI();
+  fillQueue();
+}
+
+// ─── Claude API helper ────────────────────────────────────
+async function claudeCall(prompt, maxTokens = 1000) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5',
+      max_tokens: maxTokens,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  const data = await res.json();
+  // Surface API-level errors clearly
+  if (data.error) throw new Error('API error: ' + (data.error.message || JSON.stringify(data.error)));
+  if (!data.content || !data.content.length) throw new Error('Empty response from API: ' + JSON.stringify(data));
+  return data.content.map(c => c.text || '').join('');
+}
+
+function setLoadingMsg(msg) {
+  document.getElementById('loadingState').innerHTML =
+    `<div class="spinner"></div><div>${msg}</div>`;
+}
+
+// ─── Question generation (queue-backed) ──────────────────
+// extractJSON lives here as a module-level helper
+function extractJSON(str) {
+  const start = str.indexOf('{');
+  const end = str.lastIndexOf('}');
+  if (start === -1 || end === -1) throw new Error('No JSON object found in response');
+  return JSON.parse(str.slice(start, end + 1));
+}
+
+async function generateQuestion() {
+  const card = document.getElementById('questionCard');
+  card.className = 'question-card';
+  document.getElementById('questionContent').style.display = 'none';
+  document.getElementById('nextBtn').classList.remove('show');
+  state.answered = false;
+  state.questionNum++;
+
+  // ── Fast path: queue has a question ready ──────────────
+  if (questionQueue.length > 0) {
+    const q = questionQueue.shift();
+    updateQueueUI();
+    state.currentQ = q;
+    renderQuestion(q);
+    fillQueue(); // refill in background immediately
+    return;
+  }
+
+  // ── Slow path: queue empty, fetch live with spinner ────
+  document.getElementById('loadingState').style.display = 'flex';
+  document.getElementById('loadingState').innerHTML = '<div class="spinner"></div><div>Generating your question…</div>';
+
+  try {
+    const q = await fetchOneQuestion();
+    state.currentQ = q;
+    renderQuestion(q);
+  } catch(e) {
+    console.error('SAT Prep Error:', e);
+    const msg = e.message || 'Unknown error';
+    document.getElementById('loadingState').innerHTML =
+      `<div style="color:var(--red);text-align:center;padding:10px">
+        <div style="margin-bottom:8px">⚠️ Error loading question</div>
+        <div style="font-size:0.75rem;color:#f87171;font-family:monospace;word-break:break-all">${msg}</div>
+        <div style="margin-top:12px;font-size:0.8rem;color:#7070a0">Retrying in 3s…</div>
+      </div>`;
+    setTimeout(generateQuestion, 3000);
+    return;
+  }
+  fillQueue(); // start background fill after first question loaded
+}
+
+function renderQuestion(q) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('questionContent').style.display = 'block';
+
+  const typeEl = document.getElementById('qType');
+  typeEl.textContent = q.type === 'math' ? '🔢 Math' : '📖 English';
+  typeEl.className = 'q-type ' + q.type;
+  document.getElementById('qNum').textContent = '#' + state.questionNum;
+
+  const passage = document.getElementById('qPassage');
+  if (q.passage && q.passage.trim()) {
+    passage.textContent = q.passage;
+    passage.style.display = 'block';
+  } else {
+    passage.style.display = 'none';
+  }
+  document.getElementById('qText').textContent = q.question;
+
+  const grid = document.getElementById('choicesGrid');
+  const letters = ['A','B','C','D'];
+  grid.innerHTML = q.choices.map((c, i) => `
+    <button class="choice-btn" onclick="answer('${letters[i]}', this)" id="choice${letters[i]}">
+      <span class="choice-letter">${letters[i]}</span>
+      <span>${c.replace(/^[A-D]\)\s*/,'')}</span>
+    </button>`).join('');
+
+  document.getElementById('feedbackBox').className = 'feedback-box';
+  document.getElementById('feedbackBox').textContent = '';
+  updateUI();
+}
+
+// ─── Victory flash ───────────────────────────────────────
+function triggerVictoryFlash(mult) {
+  const tier = getDiffTier(state.difficulty);
+  // Opacity scales with multiplier intensity
+  const alpha = Math.min(0.12 + (mult - 1) * 0.06, 0.40).toFixed(2);
+  const hex = tier.color;
+  const vf = document.getElementById('victoryFlash');
+  vf.style.background = `radial-gradient(ellipse at center, ${hex}${Math.round(alpha*255).toString(16).padStart(2,'0')} 0%, transparent 70%)`;
+  vf.classList.remove('pop');
+  void vf.offsetWidth;
+  vf.classList.add('pop');
+}
+
+function triggerPointsPopup(pts, mult) {
+  const pp = document.getElementById('pointsPopup');
+  // Color matches difficulty tier
+  const tier = getDiffTier(state.difficulty);
+  const label = mult > 1 ? `+${pts} ×${mult}!` : `+${pts}`;
+  pp.textContent = label;
+  pp.style.color = tier.color;
+  pp.classList.remove('pop');
+  void pp.offsetWidth;
+  pp.classList.add('pop');
+}
+
+
+// ─── Floor difficulty ──────────────────────────────────────
+function adjustFloor(delta) {
+  const newFloor = Math.max(1, Math.min(10, state.diffFloor + delta));
+  state.diffFloor = newFloor;
+  // If current difficulty is below new floor, jump up and flush queue
+  if (state.difficulty < state.diffFloor) {
+    state.difficulty = state.diffFloor;
+    state.diffProgress = 0;
+    questionQueue.length = 0;
+    updateQueueUI();
+    fillQueue();
+  }
+  updateFloorUI();
+  updateUI();
+}
+
+function updateFloorUI() {
+  const f = state.diffFloor;
+  const tier = getDiffTier(f);
+  document.getElementById('floorVal').textContent = 'Lv.' + f;
+  const badge = document.getElementById('floorBadge');
+  badge.textContent = tier.label;
+  badge.style.color = tier.color;
+  badge.style.borderColor = tier.color + '60';
+  badge.style.background = tier.color + '14';
+  document.getElementById('floorDown').disabled = f <= 1;
+  document.getElementById('floorUp').disabled = f >= 10;
+  // Hint updates based on floor vs current difficulty
+  const hint = document.getElementById('floorHint');
+  if (f > 1) {
+    hint.textContent = f === state.difficulty
+      ? 'At floor — difficulty locked here'
+      : 'Won\'t drop below Lv.' + f;
+    hint.style.color = tier.color + 'cc';
+  } else {
+    hint.textContent = "Won't drop below this level";
+    hint.style.color = '';
+  }
+}
+
+// ─── Answer handling ──────────────────────────────────────
+function answer(chosen, btn) {
+  if (state.answered) return;
+  state.answered = true;
+  state.totalAnswered++;
+
+  const q = state.currentQ;
+  const correct = q.correct;
+  const isRight = chosen === correct;
+
+  // Style buttons
+  document.querySelectorAll('.choice-btn').forEach(b => b.disabled = true);
+  if (isRight) {
+    btn.classList.add('selected-correct');
+  } else {
+    btn.classList.add('selected-wrong');
+    document.getElementById('choice' + correct).classList.add('reveal-correct');
+  }
+
+  // Feedback
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box show ' + (isRight ? 'correct-fb' : 'wrong-fb');
+  fb.textContent = isRight
+    ? `✓ Correct! ${q.explanation}`
+    : `✗ The answer is ${correct}. ${q.explanation}`;
+
+  document.getElementById('questionCard').classList.add(isRight ? 'correct' : 'wrong');
+
+  // ── Record in session history ─────────────────────────
+  const histEntry = {
+    question: q.question.slice(0, 90) + (q.question.length > 90 ? '…' : ''),
+    correct: isRight,
+    correctAnswer: q.choices.find(c => c.startsWith(correct + ')')) || correct,
+    type: q.type,
+    diff: state.difficulty,
+    pts: 0,
+  };
+
+  if (isRight) {
+    state.totalCorrect++;
+    state.streak++;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+
+    // ── Points ────────────────────────────────────────────
+    const mult = getMultiplier();
+    const basePoints = 10 * state.difficulty;
+    const earned = Math.round(basePoints * mult);
+    state.points += earned;
+    histEntry.pts = earned;
+
+    // ── Victory flash ──────────────────────────────────────
+    triggerVictoryFlash(mult);
+    triggerPointsPopup(earned, mult);
+
+    // ── Difficulty progress bar ────────────────────────────
+    state.diffProgress++;
+    if (state.diffProgress >= CORRECT_PER_LEVEL) {
+      state.diffProgress = 0;
+      if (state.difficulty < 10) {
+        // Flash ghost bar then level up
+        const ghost = document.getElementById('diffGhost');
+        const tier = getDiffTier(state.difficulty);
+        ghost.style.background = tier.color;
+        ghost.classList.remove('flash');
+        void ghost.offsetWidth;
+        ghost.classList.add('flash');
+        state.difficulty++;
+        // Flush queue — questions must match new difficulty
+        questionQueue.length = 0;
+        updateQueueUI();
+        fillQueue();
+      }
+    }
+
+    // ── Streak milestones ──────────────────────────────────
+    if (state.streak === 3)  comboFlash('🔥 3 Streak!');
+    else if (state.streak === 5)  comboFlash('⚡ 5 Streak!');
+    else if (state.streak === 10) comboFlash('🏆 10 Streak!');
+    else if (state.streak === 20) comboFlash('👑 20 Streak!');
+
+  } else {
+    saveStreak(state.streak);
+    // Reset streak and progress; difficulty drops to floor (not always 1)
+    state.streak = 0;
+    state.difficulty = state.diffFloor;
+    state.diffProgress = 0;
+    // Flush queue so next questions are at floor difficulty
+    questionQueue.length = 0;
+    updateQueueUI();
+    fillQueue();
+  }
+
+  // Push to history and update allTime
+  state.sessionHistory.push(histEntry);
+  state.allTime.answered++;
+  if (isRight) { state.allTime.correct++; state.allTime.points += histEntry.pts; }
+  if (state.bestStreak > state.allTime.bestStreak) state.allTime.bestStreak = state.bestStreak;
+  saveUserStats();
+
+  updateUI();
+  document.getElementById('nextBtn').classList.add('show');
+}
+
+function nextQuestion() {
+  generateQuestion();
+}
+
+
+// ─── Init ─────────────────────────────────────────────────
+// All DOM interaction must wait for DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  // Seed admin account (hardcoded, always present)
+  (function seedAdmin() {
+    const users = getUsers();
+    const adminHash = hashPassword('PSATclaudeiscool12345');
+    if (!users['SATPREPADMIN'] || users['SATPREPADMIN'].hash !== adminHash) {
+      users['SATPREPADMIN'] = { hash: adminHash, bestStreak: 0, isAdmin: true };
+      saveUsers(users);
+    }
+  })();
+  updateUI();
+  updateQueueUI();
+  fillQueue();
+  generateQuestion();
+
+  // Enter key support for login inputs
+  ['loginUsername','loginPassword'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+  });
+  ['regUsername','regPassword','regConfirm'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') doRegister(); });
+  });
+});
+</script>
+</body>
+</html>
