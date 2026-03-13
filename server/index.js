@@ -39,7 +39,7 @@ app.get('/health', (_req, res) => {
 if (process.env.NODE_ENV === 'production') {
   const distPath = join(__dirname, '..', 'dist');
   app.use(express.static(distPath));
-  app.get('*', (_req, res) => {
+  app.get('/{*path}', (_req, res) => {
     res.sendFile(join(distPath, 'index.html'));
   });
 }
@@ -65,8 +65,8 @@ async function autoMigrate() {
   }
 }
 
-autoMigrate().then(() => {
-  app.listen(PORT, () => {
-    console.log(`[sat-prep] Server running on port ${PORT}`);
-  });
+// Start server first (health check must pass), then migrate
+app.listen(PORT, () => {
+  console.log(`[sat-prep] Server running on port ${PORT}`);
+  autoMigrate();
 });
