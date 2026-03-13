@@ -576,7 +576,7 @@ export const QUESTION_BANK = [
 
   { type:'math', passage:'', difficulty:3,
     question:'If f(x) = x^2 + 6x + 8, which expression is equivalent to f(x)?',
-    choices:['A) (x + 4)(x + 2)','B) (x - 4)(x - 2)','C) (x + 8)(x - 1)','D) (x + 3)^2 - 1'], correct:'A',
+    choices:['A) (x + 4)(x + 2)','B) (x - 4)(x - 2)','C) (x + 8)(x - 1)','D) (x + 4)(x - 2)'], correct:'A',
     explanation:'Numbers that multiply to 8 and add to 6 are 4 and 2.' },
 
   { type:'math', passage:'', difficulty:3,
@@ -601,7 +601,7 @@ export const QUESTION_BANK = [
 
   { type:'math', passage:'', difficulty:4,
     question:'If x^2 + 2x - 15 = 0, what is one possible value of x ?',
-    choices:['A) -5','B) -3','C) 3','D) 5'], correct:'C',
+    choices:['A) -3','B) -1','C) 3','D) 5'], correct:'C',
     explanation:'Factor: (x + 5)(x - 3) = 0, so x = -5 or x = 3. One possible value is 3.' },
 
   { type:'math', passage:'', difficulty:4,
