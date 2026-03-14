@@ -20,6 +20,7 @@ body {
   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;
   min-height: 100dvh;
+  min-height: 100svh;
   overflow-x: hidden;
 }
 
@@ -793,9 +794,9 @@ button, a, .choice-btn, .tab-btn, .mode-btn, .floor-btn, .user-badge {
 }
 
 @media (max-width: 700px) {
-  /* Container: tight padding, room for fixed bottom elements */
+  /* Container: tight padding, room for fixed bottom elements + safe area */
   .container {
-    padding: 8px 10px 140px;
+    padding: 8px 10px calc(140px + env(safe-area-inset-bottom));
   }
 
   /* Header: ultra-compact single line */
@@ -827,7 +828,7 @@ button, a, .choice-btn, .tab-btn, .mode-btn, .floor-btn, .user-badge {
     align-items: center;
     gap: 10px;
     padding: 8px 14px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     border-radius: 10px;
   }
   .streak-info { gap: 8px; }
@@ -839,7 +840,7 @@ button, a, .choice-btn, .tab-btn, .mode-btn, .floor-btn, .user-badge {
 
   /* Difficulty bar: compact inline */
   .difficulty-row {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     gap: 8px;
   }
   .diff-track { height: 8px; }
@@ -847,7 +848,7 @@ button, a, .choice-btn, .tab-btn, .mode-btn, .floor-btn, .user-badge {
   .diff-badge { font-size: 0.65rem; padding: 2px 8px; }
 
   /* Mode selector: compact pill row */
-  .mode-row { margin-bottom: 8px; gap: 4px; }
+  .mode-row { margin-bottom: 6px; gap: 4px; }
   .mode-btn { padding: 6px 4px; font-size: 0.75rem; border-radius: 8px; }
 
   /* ====== QUESTION CARD: the star of the show ====== */
@@ -875,10 +876,10 @@ button, a, .choice-btn, .tab-btn, .mode-btn, .floor-btn, .user-badge {
     gap: 10px;
   }
 
-  /* Next button: fixed at bottom of viewport, above tab bar */
+  /* Next button: fixed at bottom of viewport, above tab bar + safe area */
   .next-btn {
     position: fixed;
-    bottom: 56px;
+    bottom: calc(56px + env(safe-area-inset-bottom));
     left: 10px;
     right: 10px;
     width: auto;
