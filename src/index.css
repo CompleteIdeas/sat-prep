@@ -793,103 +793,116 @@ button, a, .choice-btn, .tab-btn, .mode-btn, .floor-btn, .user-badge {
 }
 
 @media (max-width: 700px) {
-  /* Container: reduce padding */
+  /* Container: tight padding, room for fixed bottom elements */
   .container {
-    padding: 12px 12px 160px;
+    padding: 8px 10px 140px;
   }
 
-  /* Header: compact */
+  /* Header: ultra-compact single line */
   header {
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-    padding-bottom: 14px;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
   }
-  .logo { font-size: 1.5rem; }
+  .logo { font-size: 1.3rem; }
 
   /* Hide queue pill on mobile — bottom bar is enough */
   .header-stats .stat-pill { display: none; }
 
-  /* Streak bar: stack vertically, smaller number */
-  .streak-bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
+  /* ====== HIDE CHROME: push question to top ====== */
+
+  /* Session bar: HIDDEN on practice (visible on stats tab via component) */
+  .session-bar {
+    display: none;
   }
-  .streak-num { font-size: 2.8rem; }
-  .best-streak { text-align: left; }
 
-  /* Difficulty bar: compact */
-  .difficulty-row { margin-bottom: 16px; }
-
-  /* Mode selector: compact */
-  .mode-row { margin-bottom: 16px; }
-  .mode-btn { padding: 8px; font-size: 0.8rem; }
-
-  /* Floor control: compact */
+  /* Floor control: HIDDEN on mobile (rarely changed, available on desktop) */
   .floor-row {
-    padding: 10px 14px;
-    margin-bottom: 16px;
+    display: none;
   }
 
-  /* Question card: reduce padding */
+  /* Streak bar: ultra-compact single-line strip */
+  .streak-bar {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+  }
+  .streak-info { gap: 8px; }
+  .streak-num { font-size: 1.6rem; }
+  .streak-label { display: none; }
+  .streak-desc { font-size: 0.8rem; }
+  .best-streak { text-align: right; font-size: 0.65rem; }
+  .best-streak .best-val { font-size: 0.85rem; display: inline; margin-right: 2px; }
+
+  /* Difficulty bar: compact inline */
+  .difficulty-row {
+    margin-bottom: 8px;
+    gap: 8px;
+  }
+  .diff-track { height: 8px; }
+  .diff-label { font-size: 0.65rem; }
+  .diff-badge { font-size: 0.65rem; padding: 2px 8px; }
+
+  /* Mode selector: compact pill row */
+  .mode-row { margin-bottom: 8px; gap: 4px; }
+  .mode-btn { padding: 6px 4px; font-size: 0.75rem; border-radius: 8px; }
+
+  /* ====== QUESTION CARD: the star of the show ====== */
   .question-card {
-    padding: 16px;
-    border-radius: 18px;
-    margin-bottom: 16px;
+    padding: 14px;
+    border-radius: 16px;
+    margin-bottom: 12px;
     min-height: auto;
   }
-  .question-text { font-size: 1.1rem; line-height: 1.65; }
-  .question-passage { font-size: 0.85rem; padding: 10px 12px; }
+  .q-meta { margin-bottom: 10px; gap: 6px; }
+  .question-text { font-size: 1.05rem; line-height: 1.6; margin-bottom: 8px; }
+  .question-passage { font-size: 0.82rem; padding: 8px 10px; margin-bottom: 12px; line-height: 1.6; }
 
-  /* Choices: always 1-column on mobile */
+  /* Choices: always 1-column, tight */
   .choices {
     grid-template-columns: 1fr;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 6px;
+    margin-top: 12px;
   }
   .choice-btn {
-    padding: 14px 16px;
-    border-radius: 12px;
-    font-size: 1rem;
-    /* Minimum 44px touch target */
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 0.95rem;
     min-height: 44px;
+    gap: 10px;
   }
 
-  /* Next button: fixed at bottom of viewport */
+  /* Next button: fixed at bottom of viewport, above tab bar */
   .next-btn {
     position: fixed;
-    bottom: 60px; /* above the tab bar */
-    left: 12px;
-    right: 12px;
+    bottom: 56px;
+    left: 10px;
+    right: 10px;
     width: auto;
     margin-top: 0;
-    border-radius: 14px;
-    padding: 16px;
-    font-size: 1.05rem;
-    z-index: 60;
-    box-shadow: 0 -4px 24px rgba(0,0,0,0.5), 0 4px 24px rgba(245,209,50,0.25);
-  }
-
-  /* Session bar: 2x2 grid, compact */
-  .session-bar {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .sbar-item {
-    padding: 12px 8px;
     border-radius: 12px;
+    padding: 14px;
+    font-size: 1rem;
+    z-index: 60;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.6), 0 4px 20px rgba(245,209,50,0.2);
   }
-  .sbar-val { font-size: 1.5rem; }
-  .sbar-label { font-size: 0.6rem; }
 
-  /* Stats grid: 2-column */
-  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .stat-card { padding: 16px 12px; border-radius: 14px; }
-  .stat-card-val { font-size: 2.2rem; }
+  /* Feedback box: compact */
+  .feedback-box {
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* ====== STATS TAB: session bar shows here ====== */
+  /* Re-show session bar inside stats tab */
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card { padding: 14px 10px; border-radius: 12px; }
+  .stat-card-val { font-size: 2rem; }
 
   /* Tab navigation: fixed bottom bar */
   .tab-nav {
@@ -902,59 +915,44 @@ button, a, .choice-btn, .tab-btn, .mode-btn, .floor-btn, .user-badge {
     border: none;
     border-top: 1px solid var(--border);
     background: var(--surface);
-    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    padding: 4px 4px calc(4px + env(safe-area-inset-bottom));
     z-index: 70;
-    gap: 4px;
+    gap: 2px;
   }
   .tab-btn {
-    padding: 10px 8px;
-    font-size: 0.8rem;
-    border-radius: 10px;
-  }
-
-  /* Feedback box: compact */
-  .feedback-box {
-    padding: 12px 14px;
-    font-size: 0.85rem;
+    padding: 8px 6px;
+    font-size: 0.75rem;
+    border-radius: 8px;
   }
 
   /* Leaderboard rows: compact */
-  .lb-row { padding: 10px 14px; gap: 12px; }
-  .lb-score { font-size: 1.2rem; }
+  .lb-row { padding: 10px 12px; gap: 10px; }
+  .lb-score { font-size: 1.1rem; }
 
   /* History items: compact */
-  .history-item { padding: 10px 14px; gap: 10px; }
-  .hi-question { font-size: 0.85rem; }
+  .history-item { padding: 10px 12px; gap: 10px; }
+  .hi-question { font-size: 0.82rem; }
 
   /* Admin panel: stack action buttons */
-  .admin-account-row {
-    flex-wrap: wrap;
-  }
-  .admin-btn {
-    flex: 1;
-    min-width: 100px;
-    text-align: center;
-  }
+  .admin-account-row { flex-wrap: wrap; }
+  .admin-btn { flex: 1; min-width: 100px; text-align: center; }
 
   /* Login card: mobile padding */
-  .login-card {
-    padding: 28px 20px;
-    border-radius: 20px;
-  }
-  .login-logo { font-size: 1.8rem; }
+  .login-card { padding: 24px 18px; border-radius: 18px; }
+  .login-logo { font-size: 1.6rem; }
 
   /* Loading state: less padding */
-  .loading-state { padding: 20px; }
+  .loading-state { padding: 16px; }
 
   /* Combo/points popups: smaller on mobile */
-  .combo-flash { font-size: 2.8rem; }
-  .points-popup { font-size: 2.5rem; }
+  .combo-flash { font-size: 2.5rem; }
+  .points-popup { font-size: 2.2rem; }
 
   /* Queue fill bar: above the tab bar */
   .queue-fill-bar {
-    bottom: calc(52px + env(safe-area-inset-bottom));
+    bottom: calc(48px + env(safe-area-inset-bottom));
   }
 
   /* Multiplier badge */
-  .multiplier-badge { font-size: 0.7rem; padding: 2px 10px; }
+  .multiplier-badge { font-size: 0.65rem; padding: 2px 8px; }
 }
