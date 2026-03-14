@@ -34,6 +34,12 @@ export const api = {
   // Questions
   generateQuestion: (mode, difficulty) =>
     request('/questions/generate', { method: 'POST', body: JSON.stringify({ mode, difficulty }) }),
+  getRandomQuestion: (mode, difficulty, excludeIds = []) => {
+    const params = new URLSearchParams({ mode, difficulty });
+    if (excludeIds.length) params.set('exclude', excludeIds.join(','));
+    return request(`/questions/random?${params}`);
+  },
+  getQuestionStats: () => request('/questions/stats'),
 
   // Stats
   updateStats: (correct, points, best_streak) =>

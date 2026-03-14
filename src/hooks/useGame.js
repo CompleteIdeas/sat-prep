@@ -73,16 +73,34 @@ export function useGame(user) {
     setQueueCount(0);
   }, [user?.id]);
 
+  const recentDbIdsRef = useRef([]);
+
   const fetchOneQuestion = useCallback(async (mode, difficulty) => {
-    // 50% chance: serve from built-in bank
-    if (Math.random() < 0.5) {
+    // Try DB questions first (70%), then built-in bank (15%), then AI (15%)
+    const roll = Math.random();
+
+    if (roll < 0.70) {
+      try {
+        const q = await api.getRandomQuestion(mode, difficulty, recentDbIdsRef.current);
+        if (q && q.question) {
+          // Track recently served to avoid repeats
+          if (q.question_id) recentDbIdsRef.current = [...recentDbIdsRef.current.slice(-30), q.question_id];
+          return q;
+        }
+      } catch {
+        // DB unavailable or empty — fall through
+      }
+    }
+
+    if (roll < 0.85) {
       const result = getBankQuestion(mode, difficulty, recentBankIdsRef.current);
       if (result) {
         recentBankIdsRef.current = [...recentBankIdsRef.current.slice(-10), result.idx];
         return result.question;
       }
     }
-    // AI-generated
+
+    // AI-generated fallback
     return api.generateQuestion(mode, difficulty);
   }, []);
 

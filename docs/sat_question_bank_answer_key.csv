@@ -1,0 +1,122 @@
+question_id,section,domain,question_type,difficulty_1_to_10,correct_answer,correct_answer_text,explanation
+RW-I-001,Reading and Writing,Information and Ideas,MCQ,4,B,"Shaded pavement can remain cooler, suggesting that urban trees may help streets last longer.","The text emphasizes that shading from trees cools pavement and may reduce cracking, which supports the idea that trees can help streets last longer."
+RW-I-002,Reading and Writing,Information and Ideas,MCQ,5,A,The tablets were probably practical records instead of purely ceremonial objects.,The passage contrasts an older ceremonial interpretation with a newer record-keeping interpretation.
+RW-I-003,Reading and Writing,Information and Ideas,MCQ,3,B,It provides evidence for the claim that seagrass beds protect young fish.,The comparison in juvenile counts supports the idea that seagrass beds provide shelter.
+RW-I-004,Reading and Writing,Information and Ideas,MCQ,4,B,Rahal's changes made the setting more effective by replacing lengthy description with selective detail.,The text links the revision choice to the praised vividness of the final setting.
+RW-I-005,Reading and Writing,Information and Ideas,MCQ,5,A,Text 2 refutes a concern raised in Text 1.,Text 1 raises a concern; Text 2 responds by arguing the opposite.
+RW-I-006,Reading and Writing,Information and Ideas,MCQ,4,C,The study identified a relationship but did not prove a cause-and-effect link.,The researcher distinguishes correlation from causation.
+RW-I-007,Reading and Writing,Information and Ideas,MCQ,2,C,"Design C, because its cycle count was much higher than the others'.","Design C's 1,140 cycles are far above the others, supporting the conclusion."
+RW-I-008,Reading and Writing,Information and Ideas,MCQ,6,B,guide physical experience in order to influence reflection.,The example shows movement through space affecting thought and reflection.
+RW-I-009,Reading and Writing,Information and Ideas,MCQ,3,B,The plant's nighttime pore opening is likely an adaptation to arid conditions.,The researchers connect the trait to moisture conservation in a dry climate.
+RW-I-010,Reading and Writing,Information and Ideas,MCQ,1,B,They support it by showing a clear majority favoring printed maps.,A 68 percent majority supports the claim that printed maps remain popular.
+RW-I-011,Reading and Writing,Information and Ideas,MCQ,6,A,restaurants can adapt to changes in when customers arrive.,The text shows restaurants surviving by shifting from lunch to evening demand.
+RW-I-012,Reading and Writing,Information and Ideas,MCQ,8,A,They provided evidence for a theory about unseen matter.,The final sentence explicitly says the measurements became evidence for unseen matter.
+RW-I-013,Reading and Writing,Information and Ideas,MCQ,2,A,became more favorable over time.,The critics moved from dismissal to praise.
+RW-I-014,Reading and Writing,Information and Ideas,MCQ,3,C,Plots with more kinds of native plants supported more pollinator species.,The argument for diversity is supported by the higher pollinator counts in the more diverse plots.
+RW-C-015,Reading and Writing,Craft and Structure,MCQ,3,B,lighthearted,"The examples show humorous, imaginative language, so 'lighthearted' is the best match."
+RW-C-016,Reading and Writing,Craft and Structure,MCQ,4,A,providing a memorable conclusion that reinforces the central claim,The anecdote now functions as a conclusion that echoes and reinforces the argument.
+RW-C-017,Reading and Writing,Craft and Structure,MCQ,5,C,By suggesting that residents remain engaged with the festival in important ways,Text 2 acknowledges crowds but emphasizes continued resident participation.
+RW-C-018,Reading and Writing,Craft and Structure,MCQ,2,C,"figuratively, to compare the fish's role to a familiar job",The fish are being compared figuratively to gardeners.
+RW-C-019,Reading and Writing,Craft and Structure,MCQ,4,A,dramatic but occurring without much public attention,"'Revolution' suggests major change, while 'quiet' suggests low visibility."
+RW-C-020,Reading and Writing,Craft and Structure,MCQ,3,B,explain why evidence from that kingdom is unusually complete,The paragraph explains why records from this kingdom survived so well.
+RW-C-021,Reading and Writing,Craft and Structure,MCQ,2,C,personify the fern in order to describe where it grows,The plant is personified; it did not literally choose.
+RW-C-022,Reading and Writing,Craft and Structure,MCQ,9,A,It overlooks another transportation factor that affects congestion.,Text 2 says bike lanes alone are insufficient because transit also matters.
+RW-C-023,Reading and Writing,Craft and Structure,MCQ,3,B,reduced to simpler visual elements,"The phrase implies removal of decorative extras, leaving a simpler style."
+RW-C-024,Reading and Writing,Craft and Structure,MCQ,2,A,present a question that frames the discussion that follows,The question sets up the topic rather than answering it.
+RW-C-025,Reading and Writing,Craft and Structure,MCQ,3,A,carefully researched yet still engaging to read,'Meticulous' means careful; 'without becoming plodding' means not dull.
+RW-C-026,Reading and Writing,Craft and Structure,MCQ,4,B,Text 2 presents a different perspective on how cooking should be approached.,The texts disagree about strictness versus improvisation in cooking.
+RW-C-027,Reading and Writing,Craft and Structure,MCQ,4,A,moving from a concrete example to broader evidence,The article begins with a specific image and then broadens to data.
+RW-C-028,Reading and Writing,Craft and Structure,MCQ,2,B,teaches students through outdoor experience,The metaphor highlights the garden as a place of learning.
+RW-E-029,Reading and Writing,Expression of Ideas,MCQ,2,B,"The new park includes walking trails, a community garden, and a playground.","Choice B creates a clear, parallel list."
+RW-E-030,Reading and Writing,Expression of Ideas,MCQ,2,B,"The new park includes walking trails, a community garden, and a playground.","Choice B creates a clear, parallel list."
+RW-E-031,Reading and Writing,Expression of Ideas,MCQ,3,C,"As a result,",'As a result' best signals that the new process solved the previously stated problem.
+RW-E-032,Reading and Writing,Expression of Ideas,MCQ,4,A,"Designed by Lina Perez, the Riverside Theater opened in 1928 and reopened in 2024 after a two-year restoration.",Choice A accurately combines the key facts needed for the stated purpose.
+RW-E-033,Reading and Writing,Expression of Ideas,MCQ,3,B,"After the sentence about the ""waggle dance""","The added sentence refers to 'This movement,' so it should immediately follow the sentence about the waggle dance."
+RW-E-034,Reading and Writing,Expression of Ideas,MCQ,2,B,"For this reason,",The final sentence follows logically as a result of the benefits just listed.
+RW-E-035,Reading and Writing,Expression of Ideas,MCQ,4,B,"Physician, engineer, and astronaut Mae Jemison became the first Black woman in space in 1992 and later promoted science education.","Choice B highlights multiple accomplishments, which matches the goal."
+RW-E-036,Reading and Writing,Expression of Ideas,MCQ,3,C,"Although relatively small, the telescope can detect planets hundreds of light-years away.",Choice C best highlights the contrast between the telescope's size and ability.
+RW-E-037,Reading and Writing,Expression of Ideas,MCQ,5,C,After the sentence about spring movement north,The detail belongs with the discussion of the spring northward journey.
+RW-E-038,Reading and Writing,Expression of Ideas,MCQ,4,A,"The city installed rain gardens beside several streets, planted areas that absorb stormwater before it can overwhelm drains.",Choice A neatly defines rain gardens while preserving the meaning.
+RW-E-039,Reading and Writing,Expression of Ideas,MCQ,2,A,"The documentary includes interviews with scientists, features archival photographs, and uses animation to explain complex processes.","Choice A creates a smooth, parallel series."
+RW-E-040,Reading and Writing,Expression of Ideas,MCQ,4,A,"Built in 1911, the Oak Street Bridge connected the downtown market to the train station, making travel and trade easier.",Choice A focuses on why the bridge mattered: it linked two key locations.
+RW-E-041,Reading and Writing,Expression of Ideas,MCQ,3,B,"Even so,","'Even so' signals contrast: despite little rain, plants thrive with adaptations."
+RW-E-042,Reading and Writing,Expression of Ideas,MCQ,5,B,After the sentence about the blades turning,The point about stronger winds belongs right after the discussion of blade movement.
+RW-E-043,Reading and Writing,Expression of Ideas,MCQ,2,A,It presents the paragraph's broad topic before later details and examples.,A strong topic sentence introduces the main idea broadly.
+RW-S-044,Reading and Writing,Standard English Conventions,MCQ,2,C,stored,The sentence needs the simple past-tense verb 'stored.'
+RW-S-045,Reading and Writing,Standard English Conventions,MCQ,4,B,are,"With 'neither...nor,' the verb agrees with the noun closer to it: 'guides' is plural."
+RW-S-046,Reading and Writing,Standard English Conventions,MCQ,2,B,because,'Because' correctly introduces the reason she reviewed the data carefully.
+RW-S-047,Reading and Writing,Standard English Conventions,MCQ,5,C,had baked,Past perfect 'had baked' correctly shows action completed before another past action.
+RW-S-048,Reading and Writing,Standard English Conventions,MCQ,3,B,"moreover,","A conjunctive adverb after a semicolon is followed by a comma: '; moreover,'."
+RW-S-049,Reading and Writing,Standard English Conventions,MCQ,2,B,whose,'Whose' correctly shows possession: the inventors' work.
+RW-S-050,Reading and Writing,Standard English Conventions,MCQ,2,C,were,Plural subject 'lights' takes plural verb 'were.'
+RW-S-051,Reading and Writing,Standard English Conventions,MCQ,3,A,where,"'Where' correctly refers to the place, the ridge."
+RW-S-052,Reading and Writing,Standard English Conventions,MCQ,4,C,is,"The subject is 'A set,' which is singular, so 'is' is correct."
+RW-S-053,Reading and Writing,Standard English Conventions,MCQ,2,B,", but",A comma plus 'but' correctly joins the contrasting independent clauses.
+RW-S-054,Reading and Writing,Standard English Conventions,MCQ,3,A,was,The passive construction requires singular 'was installed.'
+RW-S-055,Reading and Writing,Standard English Conventions,MCQ,3,C,more practical,Choice C maintains parallel structure with 'shorter' and 'clearer.'
+RW-S-056,Reading and Writing,Standard English Conventions,MCQ,3,A,was,The singular subject 'concert' takes singular verb 'was.'
+RW-S-057,Reading and Writing,Standard English Conventions,MCQ,2,B,persuasive,"After 'more concise and,' the parallel adjective form is 'persuasive.'"
+M-ALG-001,Math,Algebra,MCQ,1,B,5,"Subtract 5 to get 3x = 15, then divide by 3."
+M-ALG-002,Math,Algebra,MCQ,1,C,12,"Add 7 to get 2y = 24, then divide by 2."
+M-ALG-003,Math,Algebra,MCQ,2,B,3,Rewrite as y = 3x - 2; the slope is 3.
+M-ALG-004,Math,Algebra,MCQ,2,B,2,Slope = (15 - 7) / (6 - 2) = 8 / 4 = 2.
+M-ALG-005,Math,Algebra,MCQ,2,A,1,Substitute x = 4: y = -8 + 9 = 1.
+M-ALG-006,Math,Algebra,MCQ,4,B,"(4, 3)","Add the equations to get 3x = 12, so x = 4 and y = 3."
+M-ALG-007,Math,Algebra,MCQ,3,B,x > 4,"Add 9: 5x > 20, so x > 4."
+M-ALG-008,Math,Algebra,MCQ,2,B,c = 3m + 4,Total cost is fixed fee + per-mile charge.
+M-ALG-009,Math,Algebra,MCQ,5,C,50,Let a be adult tickets. Then 10a + 6(120 - a) = 920. So 4a = 200 and a = 50.
+M-ALG-010,Math,Algebra,MCQ,3,B,y = 2x - 2,Shifting up 3 adds 3 to all y-values: y = 2x - 2.
+M-ALG-011,Math,Algebra,MCQ,3,C,9,"Expand: 4x - 12 = 2x + 6. Then 2x = 18, so x = 9."
+M-ALG-012,Math,Algebra,MCQ,3,B,5,"78 = 18 + 12c, so 60 = 12c and c = 5."
+M-ALG-013,Math,Algebra,MCQ,3,C,5,"At the x-intercept, y = 0. So 0 = 5 - x and x = 5."
+M-ALG-014,Math,Algebra,MCQ,5,B,4,"From x + y = 7, y = 7 - x. Substitute: 3x + 2(7 - x) = 18, so x + 14 = 18 and x = 4."
+M-ALG-015,Math,Algebra,MCQ,2,D,13,f(-2) = 7 - 3(-2) = 7 + 6 = 13.
+M-ALG-016,Math,Algebra,SPR,4,SPR,5,"Add 4 to both sides to get 7x = 35, so x = 5."
+M-ADV-017,Math,Advanced Math,MCQ,2,C,-3 and 3,"x^2 = 9, so x = -3 or x = 3."
+M-ADV-018,Math,Advanced Math,MCQ,2,B,x^2 - 16,This is a difference of squares.
+M-ADV-019,Math,Advanced Math,MCQ,3,A,(x + 4)(x + 2),Numbers that multiply to 8 and add to 6 are 4 and 2.
+M-ADV-020,Math,Advanced Math,MCQ,3,A,-5,"In vertex form y = (x - h)^2 + k, the vertex is (h, k)."
+M-ADV-021,Math,Advanced Math,MCQ,2,B,5,32 = 2^5.
+M-ADV-022,Math,Advanced Math,MCQ,2,A,3x(x + 4),Factor out the greatest common factor 3x.
+M-ADV-023,Math,Advanced Math,MCQ,3,C,1 and 6,Set each factor equal to zero.
+M-ADV-024,Math,Advanced Math,MCQ,4,C,3,"Factor: (x + 5)(x - 3) = 0, so x = -5 or x = 3. One possible value is 3."
+M-ADV-025,Math,Advanced Math,MCQ,4,C,y = 2^x,"Exponential growth outpaces linear, quadratic, and constant growth for large x."
+M-ADV-026,Math,Advanced Math,MCQ,1,C,9,The principal square root of 81 is 9.
+M-ADV-027,Math,Advanced Math,MCQ,10,B,23,"Square both sides: x^2 + 2 + 1/x^2 = 25, so x^2 + 1/x^2 = 23."
+M-ADV-028,Math,Advanced Math,MCQ,2,B,x^2 - 16 = 0,Substituting x = 4 gives 16 - 16 = 0.
+M-ADV-029,Math,Advanced Math,MCQ,2,B,3,2^2 - 4(2) + 7 = 4 - 8 + 7 = 3.
+M-ADV-030,Math,Advanced Math,MCQ,3,D,108,After 3 hours: 4 * 3^3 = 4 * 27 = 108.
+M-ADV-031,Math,Advanced Math,MCQ,5,C,9,x^2 - 6x + 9 = (x - 3)^2.
+M-ADV-032,Math,Advanced Math,SPR,6,SPR,7,"Factor to (x - 3)(x - 7) = 0, so the solutions are 3 and 7."
+M-PSD-033,Math,Problem-Solving and Data Analysis,MCQ,1,C,1.50,Unit rate = 9 / 6 = 1.50 dollars per notebook.
+M-PSD-034,Math,Problem-Solving and Data Analysis,MCQ,2,C,6,Scale the ratio by 3: 3:2 becomes 9:6.
+M-PSD-035,Math,Problem-Solving and Data Analysis,MCQ,2,C,$60,"25% of 80 is 20, so the sale price is 80 - 20 = 60."
+M-PSD-036,Math,Problem-Solving and Data Analysis,MCQ,2,C,43%,86 / 200 = 0.43 = 43%.
+M-PSD-037,Math,Problem-Solving and Data Analysis,MCQ,2,C,300,"The rate is 180 / 3 = 60 miles per hour. In 5 hours, the car travels 300 miles."
+M-PSD-038,Math,Problem-Solving and Data Analysis,MCQ,3,A,4,The middle value in the ordered list is 4.
+M-PSD-039,Math,Problem-Solving and Data Analysis,MCQ,2,B,5,Mean = (3 + 3 + 4 + 7 + 8) / 5 = 25 / 5 = 5.
+M-PSD-040,Math,Problem-Solving and Data Analysis,MCQ,3,B,3/10,"There are 10 marbles total, and 3 are blue, so the probability is 3/10."
+M-PSD-041,Math,Problem-Solving and Data Analysis,MCQ,1,A,2:3,12:18 simplifies by dividing both numbers by 6.
+M-PSD-042,Math,Problem-Solving and Data Analysis,MCQ,4,B,2,"Growth is 24 - 18 = 6 cm over 3 days, so the rate is 2 cm/day."
+M-PSD-043,Math,Problem-Solving and Data Analysis,MCQ,4,B,15%,Increase is 36; 36 / 240 = 0.15 = 15%.
+M-PSD-044,Math,Problem-Solving and Data Analysis,MCQ,5,A,Students who study more tend to earn higher quiz scores.,A strong positive linear association means the variables tend to increase together.
+M-PSD-045,Math,Problem-Solving and Data Analysis,MCQ,5,B,"$2,000","If weekend revenue is 120% of weekday revenue, then weekday revenue is 2400 / 1.2 = 2000."
+M-PSD-046,Math,Problem-Solving and Data Analysis,MCQ,3,C,28 miles,3.5 * 8 = 28 miles.
+M-PSD-047,Math,Problem-Solving and Data Analysis,MCQ,8,A,Ad A,Ad A: 40/500 = 8%. Ad B: 56/800 = 7%. Ad A is higher.
+M-PSD-048,Math,Problem-Solving and Data Analysis,SPR,4,SPR,84,The mean is (70 + 80 + 80 + 90 + 100) / 5 = 420 / 5 = 84.
+M-GEO-049,Math,Geometry and Trigonometry,MCQ,1,C,40,Area = length * width = 8 * 5 = 40.
+M-GEO-050,Math,Geometry and Trigonometry,MCQ,2,A,10,"By the Pythagorean theorem, c = sqrt(6^2 + 8^2) = sqrt(100) = 10."
+M-GEO-051,Math,Geometry and Trigonometry,MCQ,2,B,6π,Circumference = 2πr = 2π(3) = 6π.
+M-GEO-052,Math,Geometry and Trigonometry,MCQ,2,B,80,"Triangle angles sum to 180°, so x = 180 - 40 - 60 = 80."
+M-GEO-053,Math,Geometry and Trigonometry,MCQ,4,B,20π,Volume = πr^2h = π(2^2)(5) = 20π.
+M-GEO-054,Math,Geometry and Trigonometry,MCQ,2,B,57°,"Supplementary angles sum to 180°, so the other angle is 57°."
+M-GEO-055,Math,Geometry and Trigonometry,MCQ,3,C,The triangle is right.,"5^2 + 12^2 = 25 + 144 = 169 = 13^2, so the triangle is right."
+M-GEO-056,Math,Geometry and Trigonometry,MCQ,7,C,112.5,Area scales by the square of the side ratio: (5/2)^2 = 25/4. Then 18 * 25/4 = 112.5.
+M-GEO-057,Math,Geometry and Trigonometry,MCQ,2,A,7,"Same x-coordinate, so the distance is the difference in y-values: 9 - 2 = 7."
+M-GEO-058,Math,Geometry and Trigonometry,MCQ,1,B,7,Radius is half the diameter.
+M-GEO-059,Math,Geometry and Trigonometry,MCQ,6,C,4/5,"Use a 3-4-5 right triangle: opposite = 3, hypotenuse = 5, adjacent = 4, so cos θ = 4/5."
+M-GEO-060,Math,Geometry and Trigonometry,MCQ,3,A,"(2, 4)","Average the x-coordinates and y-coordinates: ((-2 + 6)/2, (4 + 4)/2) = (2, 4)."
+M-GEO-061,Math,Geometry and Trigonometry,MCQ,4,C,1/4,90° is 1/4 of 360°.
+M-GEO-062,Math,Geometry and Trigonometry,MCQ,3,C,12,Height = sqrt(13^2 - 5^2) = sqrt(169 - 25) = sqrt(144) = 12.
+M-GEO-063,Math,Geometry and Trigonometry,MCQ,3,D,81,"Each side is 36 / 4 = 9, so area = 9^2 = 81."
+M-GEO-064,Math,Geometry and Trigonometry,SPR,5,SPR,72,Volume = lwh = 4 * 3 * 6 = 72.

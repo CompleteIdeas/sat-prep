@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import pool from '../db/pool.js';
 
 const router = Router();
 
@@ -38,9 +39,76 @@ function extractJSON(str) {
   return JSON.parse(str.slice(start, end + 1));
 }
 
-// POST /api/questions/generate
+// Format a DB row into the shape the frontend expects
+function formatDbQuestion(row) {
+  return {
+    type: row.type,
+    passage: row.passage || '',
+    question: row.question,
+    choices: [
+      `A) ${row.choice_a}`,
+      `B) ${row.choice_b}`,
+      `C) ${row.choice_c}`,
+      `D) ${row.choice_d}`,
+    ],
+    correct: row.correct_answer,
+    explanation: row.explanation,
+  };
+}
+
+// GET /api/questions/random — serve a random question from the DB
+router.get('/random', async (req, res) => {
+  const mode = VALID_MODES.includes(req.query.mode) ? req.query.mode : 'both';
+  const difficulty = Math.min(10, Math.max(1, Math.round(Number(req.query.difficulty) || 5)));
+  const excludeIds = req.query.exclude ? req.query.exclude.split(',') : [];
+
+  try {
+    // Match difficulty within +/- 1 range for more results
+    let query, params;
+    if (mode === 'both') {
+      query = `SELECT * FROM questions WHERE difficulty BETWEEN $1 AND $2`;
+      params = [Math.max(1, difficulty - 1), Math.min(10, difficulty + 1)];
+    } else {
+      query = `SELECT * FROM questions WHERE type = $1 AND difficulty BETWEEN $2 AND $3`;
+      params = [mode, Math.max(1, difficulty - 1), Math.min(10, difficulty + 1)];
+    }
+
+    if (excludeIds.length > 0) {
+      const placeholders = excludeIds.map((_, i) => `$${params.length + i + 1}`).join(',');
+      query += ` AND question_id NOT IN (${placeholders})`;
+      params.push(...excludeIds);
+    }
+
+    query += ' ORDER BY RANDOM() LIMIT 1';
+    const result = await pool.query(query, params);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'No questions found for that criteria' });
+    }
+
+    res.json(formatDbQuestion(result.rows[0]));
+  } catch (err) {
+    console.error('[questions] DB error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch question' });
+  }
+});
+
+// GET /api/questions/stats — question bank stats
+router.get('/stats', async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT type, difficulty, COUNT(*) as count FROM questions GROUP BY type, difficulty ORDER BY type, difficulty`
+    );
+    const total = await pool.query('SELECT COUNT(*) as count FROM questions');
+    res.json({ total: parseInt(total.rows[0].count), breakdown: result.rows });
+  } catch (err) {
+    console.error('[questions] Stats error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
+// POST /api/questions/generate — AI-generated question (existing behavior)
 router.post('/generate', async (req, res) => {
-  // Validate inputs
   const mode = VALID_MODES.includes(req.body.mode) ? req.body.mode : 'both';
   const difficulty = Math.min(10, Math.max(1, Math.round(Number(req.body.difficulty) || 1)));
 
